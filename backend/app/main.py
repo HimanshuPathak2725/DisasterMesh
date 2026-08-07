@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.db import init_db
+from app.db import get_qdrant_client_sync, init_db
 from app.routers import dispatch, health, incidents, ingest
 
 settings = get_settings()
@@ -30,6 +30,11 @@ async def lifespan(app: FastAPI):
     logger.info("DisasterMesh API starting — env=%s", settings.app_env)
     await init_db()
     logger.info("Database tables initialised")
+    # Phase 2: initialise Qdrant vector store
+    from app.agents.vector_store import init_vector_store
+
+    await init_vector_store(get_qdrant_client_sync())
+    logger.info("Qdrant vector store ready")
     yield
     logger.info("DisasterMesh API shutting down")
 

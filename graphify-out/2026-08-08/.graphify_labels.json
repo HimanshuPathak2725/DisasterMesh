@@ -32,5 +32,14 @@
   "30": "IngestResponse",
   "31": "ProtoIncident",
   "32": "Any",
-  "33": "AsyncSession"
+  "33": "AsyncSession",
+  "34": "test_schemas.py",
+  "35": "ProtoIncident",
+  "36": "ProtoIncident",
+  "37": "ProtoIncident",
+  "38": "QdrantClient",
+  "39": "CitizenReportInput",
+  "40": "SatellitePolygonInput",
+  "41": "SensorStreamInput",
+  "42": "SocialPostInput"
 }

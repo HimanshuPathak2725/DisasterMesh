@@ -8,12 +8,15 @@ from datetime import UTC, datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.agents.embeddings import get_embedding_service
 from app.agents.situational import SituationalAgent
+from app.agents.vector_store import get_vector_store
 from app.db import get_db
 from app.models import AuditLog, RawIngestionRecord
 from app.schemas import (
     CitizenReportInput,
     IngestResponse,
+    ProtoIncident,
     SatellitePolygonInput,
     SensorStreamInput,
     SocialPostInput,
@@ -59,6 +62,17 @@ async def _persist(
     # commit happens automatically in get_db() on success
 
 
+async def _index_in_vector_store(proto: ProtoIncident) -> None:
+    """Embed proto incident and upsert to Qdrant vector store."""
+    try:
+        embedder = get_embedding_service()
+        store = get_vector_store()
+        vector = await embedder.embed_incident(proto)
+        await store.upsert(proto, vector)
+    except Exception as exc:
+        logger.warning("Failed to index proto incident %s in Qdrant: %s", proto.id, exc)
+
+
 @router.post("/report", response_model=IngestResponse, summary="Citizen report")
 async def ingest_citizen_report(
     report: CitizenReportInput,
@@ -67,7 +81,7 @@ async def ingest_citizen_report(
     """
     Accept a citizen report (SMS / WhatsApp / web form).
 
-    Passes to the SituationalAgent for normalization then persists to SQLite.
+    Passes to the SituationalAgent for normalization then persists to SQLite and Qdrant.
     """
     proto = await _situational_agent.process_citizen_report(report)
     language = proto.metadata.get("language", "en")
@@ -79,6 +93,7 @@ async def ingest_citizen_report(
         proto.model_dump(mode="json"),
         language,
     )
+    await _index_in_vector_store(proto)
     logger.info("Citizen report ingested id=%s", proto.id)
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
@@ -99,6 +114,7 @@ async def ingest_social_post(
         proto.model_dump(mode="json"),
         language,
     )
+    await _index_in_vector_store(proto)
     logger.info("Social post ingested id=%s", proto.id)
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
@@ -118,6 +134,7 @@ async def ingest_satellite_polygon(
         proto.model_dump(mode="json"),
         "en",
     )
+    await _index_in_vector_store(proto)
     logger.info("Satellite polygon ingested id=%s", proto.id)
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
@@ -137,5 +154,6 @@ async def ingest_sensor_stream(
         proto.model_dump(mode="json"),
         "en",
     )
+    await _index_in_vector_store(proto)
     logger.info("Sensor reading ingested id=%s", proto.id)
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)

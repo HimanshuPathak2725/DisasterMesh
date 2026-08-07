@@ -57,6 +57,13 @@ def _haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     return 2 * math.asin(math.sqrt(a)) * EARTH_RADIUS_M
 
 
+def _uuid_to_int(uid: str) -> int:
+    """Convert a UUID string to an integer suitable as a Qdrant point ID."""
+    import uuid
+
+    return uuid.UUID(uid).int % (2**63)
+
+
 def _proto_to_document(proto: ProtoIncident) -> Document:
     """
     Convert a ProtoIncident to a LangChain Document.
@@ -150,23 +157,27 @@ class VectorStore:
     async def upsert(self, proto: ProtoIncident, vector: list[float]) -> None:
         """
         Store a ProtoIncident and its pre-computed embedding in Qdrant.
-
-        We pass the pre-computed vector directly to avoid a redundant
-        embed call (the ingest router already called EmbeddingService).
         """
-        doc = _proto_to_document(proto)
-        # add_texts with pre-computed embeddings
         import asyncio
+
+        from qdrant_client.models import PointStruct
+
+        doc = _proto_to_document(proto)
+        point_id = _uuid_to_int(proto.id)
+        # Store page_content in metadata too for search compatibility
+        payload = dict(doc.metadata)
+        payload["page_content"] = doc.page_content
+
+        point = PointStruct(id=point_id, vector=vector, payload=payload)
 
         await asyncio.get_event_loop().run_in_executor(
             None,
-            lambda: self._store.add_texts(
-                texts=[doc.page_content],
-                metadatas=[doc.metadata],
-                embeddings=[vector],
+            lambda: self._raw_client.upsert(
+                collection_name=COLLECTION_NAME,
+                points=[point],
             ),
         )
-        logger.debug("Upserted proto_id=%s to Qdrant", proto.id)
+        logger.debug("Upserted proto_id=%s point_id=%d to Qdrant", proto.id, point_id)
 
     # ── Read ──────────────────────────────────────────────────────────────────
 
@@ -258,22 +269,49 @@ class VectorStore:
         return [p for _, p in nearby[:limit]]
 
     async def get_by_proto_id(self, proto_id: str) -> dict[str, Any] | None:
-        """Fetch a payload by proto_id using metadata filter."""
-        from qdrant_client.models import FieldCondition, Filter, MatchValue
+        """Fetch a payload by proto_id."""
+        import asyncio
 
-        results = self._raw_client.scroll(
-            collection_name=COLLECTION_NAME,
-            scroll_filter=Filter(
-                must=[FieldCondition(key="proto_id", match=MatchValue(value=proto_id))]
-            ),
-            limit=1,
-            with_payload=True,
-            with_vectors=False,
-        )
-        points = results[0]
-        if points and points[0].payload:
-            return points[0].payload
-        return None
+        def _do_get():
+            try:
+                pid = _uuid_to_int(proto_id)
+            except ValueError:
+                return None
+
+            try:
+                records = self._raw_client.retrieve(
+                    collection_name=COLLECTION_NAME,
+                    ids=[pid],
+                    with_payload=True,
+                    with_vectors=False,
+                )
+                if records and records[0].payload:
+                    return records[0].payload
+            except Exception:
+                pass
+
+            # Fallback to scroll search by payload field
+            from qdrant_client.models import FieldCondition, Filter, MatchValue
+
+            try:
+                results = self._raw_client.scroll(
+                    collection_name=COLLECTION_NAME,
+                    scroll_filter=Filter(
+                        must=[FieldCondition(key="proto_id", match=MatchValue(value=proto_id))]
+                    ),
+                    limit=1,
+                    with_payload=True,
+                    with_vectors=False,
+                )
+                points = results[0]
+                if points and points[0].payload:
+                    return points[0].payload
+            except Exception:
+                pass
+
+            return None
+
+        return await asyncio.get_event_loop().run_in_executor(None, _do_get)
 
     async def collection_size(self) -> int:
         """Return the total number of points in the collection."""

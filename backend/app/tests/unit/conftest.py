@@ -1,15 +1,17 @@
 """
 conftest.py for unit tests.
 
-Provides an in-memory SQLite database for ingest endpoint tests so they do
-not require a real on-disk database or a running server lifespan.
+Provides an in-memory SQLite database and in-memory VectorStore for unit tests
+so they do not require a real on-disk database or external Qdrant instance.
 """
 
 from __future__ import annotations
 
 import pytest
+from qdrant_client import QdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.agents.vector_store import VectorStore, init_vector_store
 from app.models import Base
 
 # ── In-memory async SQLite engine (shared across all unit tests) ──────────────
@@ -46,6 +48,13 @@ async def db_session(test_engine):
 
 
 @pytest.fixture(autouse=True)
+async def memory_vector_store() -> VectorStore:
+    """Initialize an in-memory VectorStore for unit tests."""
+    client = QdrantClient(":memory:")
+    return await init_vector_store(client)
+
+
+@pytest.fixture(autouse=True)
 def patch_get_db(db_session, monkeypatch):
     """
     Replace the FastAPI `get_db` dependency with one that returns the
@@ -72,10 +81,10 @@ def patch_get_db(db_session, monkeypatch):
 
 @pytest.fixture(autouse=True)
 def patch_init_db(monkeypatch):
-    """Prevent lifespan from calling the real init_db (we handle DB setup above)."""
+    """Prevent lifespan from calling real init_db (we handle DB setup above)."""
     import app.main as main_mod
 
-    async def _noop():
+    async def _noop(*args, **kwargs):
         pass
 
     monkeypatch.setattr(main_mod, "init_db", _noop)
