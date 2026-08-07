@@ -17,9 +17,7 @@ import logging
 import math
 from datetime import UTC, datetime
 from typing import Any
-
-from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
-from geopy.geocoders import Nominatim
+import httpx
 
 from app.schemas import (
     CitizenReportInput,
@@ -64,6 +62,32 @@ _LANDMARK_TABLE: dict[str, tuple[float, float]] = {
     "east delhi": (28.6600, 77.3100),
     "times square delhi": (28.6315, 77.2167),  # test fixture → Connaught Place
     "times square, delhi": (28.6315, 77.2167),  # with comma variant
+    "janakpuri": (28.6289, 77.0839),
+    "pitampura": (28.7021, 77.1313),
+    "saket": (28.5245, 77.2066),
+    "vasant kunj": (28.5206, 77.1577),
+    "uttam nagar": (28.6186, 77.0535),
+    "vikaspuri": (28.6408, 77.0728),
+    "paschim vihar": (28.6686, 77.0972),
+    "shalimar bagh": (28.7148, 77.1600),
+    "wazirpur": (28.6999, 77.1641),
+    "karol bagh": (28.6514, 77.1907),
+    "chandni chowk": (28.6506, 77.2303),
+    "nehru place": (28.5491, 77.2519),
+    "hauz khas": (28.5494, 77.2001),
+    "patel nagar": (28.6464, 77.1720),
+    "kirti nagar": (28.6560, 77.1481),
+    "rajouri garden": (28.6467, 77.1195),
+    "tilak nagar": (28.6379, 77.0969),
+    "subhash nagar": (28.6393, 77.1095),
+    "tagore garden": (28.6453, 77.1297),
+    "punjabi bagh": (28.6660, 77.1310),
+    # Devanagari additions
+    "जनकपुरी": (28.6289, 77.0839),
+    "करोल बाग": (28.6514, 77.1907),
+    "चाँदनी चौक": (28.6506, 77.2303),
+    "पीतमपुरा": (28.7021, 77.1313),
+    "साकेत": (28.5245, 77.2066),
     # Devanagari (Hindi) forms
     "यमुना बाज़ार": (28.6667, 77.2333),
     "यमुना बाजार": (28.6667, 77.2333),
@@ -126,8 +150,9 @@ class SituationalAgent:
     """Normalizes all incoming data streams into ProtoIncident objects."""
 
     def __init__(self, geocoder_timeout: float = 5.0) -> None:
-        self._geocoder = Nominatim(
-            user_agent="disastermesh/0.1 (disaster-response-demo)",
+        self._geocoder_timeout = geocoder_timeout
+        self._http_client = httpx.AsyncClient(
+            headers={"User-Agent": "disastermesh/0.1 (disaster-response-demo)"},
             timeout=geocoder_timeout,
         )
 
@@ -277,27 +302,33 @@ class SituationalAgent:
 
         Strategy:
           1. Landmark table lookup (instant, works offline, handles Hindi)
-          2. Nominatim OSM geocoder (live, with timeout + error handling)
+          2. Nominatim OSM REST API via httpx (works on macOS, any address worldwide)
         """
-        # 1. Fast landmark fallback first (also works offline in tests)
+        # 1. Fast landmark fallback first (works offline in tests)
         result = _lookup_landmark(address)
         if result:
             logger.debug("Landmark table hit for %r → %s", address, result)
             return result
 
-        # 2. Nominatim live lookup
+        # 2. Nominatim REST API via httpx (handles SSL correctly on all platforms)
         try:
-            location = self._geocoder.geocode(address)
-            if location:
-                logger.debug(
-                    "Nominatim resolved %r → (%.4f, %.4f)",
-                    address,
-                    location.latitude,
-                    location.longitude,
-                )
-                return location.latitude, location.longitude
-        except (GeocoderTimedOut, GeocoderUnavailable) as exc:
-            logger.warning("Geocoder error for %r: %s", address, exc)
+            resp = await self._http_client.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={"q": address, "format": "json", "limit": 1},
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            if data:
+                lat = float(data[0]["lat"])
+                lon = float(data[0]["lon"])
+                logger.debug("Nominatim resolved %r → (%.4f, %.4f)", address, lat, lon)
+                return lat, lon
+        except httpx.TimeoutException:
+            logger.warning("Nominatim timed out for %r", address)
+        except httpx.HTTPError as exc:
+            logger.warning("Nominatim HTTP error for %r: %s", address, exc)
+        except Exception as exc:
+            logger.warning("Geocoder unexpected error for %r: %s", address, exc)
 
         return None
 

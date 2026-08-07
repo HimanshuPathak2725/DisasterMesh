@@ -80,7 +80,7 @@ async def ingest_citizen_report(
         language,
     )
     logger.info("Citizen report ingested id=%s", proto.id)
-    return IngestResponse(message_id=proto.id)
+    return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
 
 @router.post("/social", response_model=IngestResponse, summary="Social post")
@@ -100,7 +100,7 @@ async def ingest_social_post(
         language,
     )
     logger.info("Social post ingested id=%s", proto.id)
-    return IngestResponse(message_id=proto.id)
+    return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
 
 @router.post("/satellite", response_model=IngestResponse, summary="Satellite polygon")
@@ -119,7 +119,7 @@ async def ingest_satellite_polygon(
         "en",
     )
     logger.info("Satellite polygon ingested id=%s", proto.id)
-    return IngestResponse(message_id=proto.id)
+    return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
 
 @router.post("/sensor", response_model=IngestResponse, summary="IoT sensor")
@@ -138,4 +138,4 @@ async def ingest_sensor_stream(
         "en",
     )
     logger.info("Sensor reading ingested id=%s", proto.id)
-    return IngestResponse(message_id=proto.id)
+    return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
