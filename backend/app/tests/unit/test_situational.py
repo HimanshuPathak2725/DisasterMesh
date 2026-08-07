@@ -8,7 +8,6 @@ Run:
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -28,7 +27,6 @@ from app.schemas import (
     SocialPostInput,
     SourceType,
 )
-
 
 # ── Language detection ────────────────────────────────────────────────────────
 

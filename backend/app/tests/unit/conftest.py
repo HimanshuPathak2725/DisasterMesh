@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.models import Base
 
-
 # ── In-memory async SQLite engine (shared across all unit tests) ──────────────
 
 _TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -53,8 +52,6 @@ def patch_get_db(db_session, monkeypatch):
     test session.  `autouse=True` applies to all tests in this package
     so ingest endpoint tests always use the in-memory DB.
     """
-    from app import routers
-
     async def _override():
         yield db_session
 
@@ -63,8 +60,8 @@ def patch_get_db(db_session, monkeypatch):
     monkeypatch.setattr(ingest_mod, "get_db", _override)
 
     # Also patch the app's dependency overrides
-    from app.main import app
     from app.db import get_db
+    from app.main import app
     app.dependency_overrides[get_db] = _override
     yield
     app.dependency_overrides.pop(get_db, None)

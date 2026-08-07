@@ -15,11 +15,10 @@ from collections.abc import AsyncGenerator
 from functools import lru_cache
 
 import redis.asyncio as aioredis
-from qdrant_client import AsyncQdrantClient
+from qdrant_client import AsyncQdrantClient, QdrantClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.config import get_settings
-
 
 # ── Qdrant ────────────────────────────────────────────────────────────────────
 
@@ -45,6 +44,28 @@ def get_qdrant_client() -> AsyncQdrantClient:
     path = settings.qdrant_local_path
     os.makedirs(path, exist_ok=True)
     return AsyncQdrantClient(path=path)
+
+
+@lru_cache
+def get_qdrant_client_sync() -> QdrantClient:
+    """
+    Return a cached synchronous Qdrant client.
+
+    Required by langchain-qdrant's QdrantVectorStore which uses the sync client.
+    Same connection settings as the async client.
+    """
+    settings = get_settings()
+    url = settings.qdrant_url.strip()
+
+    if url:
+        return QdrantClient(
+            url=url,
+            api_key=settings.qdrant_api_key or None,
+        )
+
+    path = settings.qdrant_local_path
+    os.makedirs(path, exist_ok=True)
+    return QdrantClient(path=path)
 
 
 # ── Redis ─────────────────────────────────────────────────────────────────────

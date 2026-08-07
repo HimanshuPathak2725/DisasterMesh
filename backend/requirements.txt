@@ -14,8 +14,11 @@ greenlet         # required by SQLAlchemy async (greenlet-based concurrency)
 # ── Vector store ──────────────────────────────────────────────────────────────
 qdrant-client
 
-# ── Embeddings ────────────────────────────────────────────────────────────────
-sentence-transformers
+# ── Embeddings + Vector Store (LangChain, free, local, no API key) ────────────
+langchain-core
+langchain-huggingface
+langchain-qdrant
+sentence-transformers         # backend model used by langchain-huggingface
 
 # ── Optimization ──────────────────────────────────────────────────────────────
 ortools
