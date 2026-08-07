@@ -34,7 +34,6 @@ async def lifespan(app: FastAPI):
     logger.info("DisasterMesh API shutting down")
 
 
-
 # ── App ───────────────────────────────────────────────────────────────────────
 
 app = FastAPI(

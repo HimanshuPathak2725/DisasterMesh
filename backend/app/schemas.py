@@ -177,5 +177,5 @@ class HealthResponse(BaseModel):
 class IngestResponse(BaseModel):
     status: str = "received"
     message_id: str
-    lat: float | None = None   # resolved coordinates (None if geocoding failed)
+    lat: float | None = None  # resolved coordinates (None if geocoding failed)
     lon: float | None = None

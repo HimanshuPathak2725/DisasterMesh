@@ -52,9 +52,7 @@ class RawIngestionRecord(Base):
         nullable=False,
         index=True,
     )
-    processed_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     def __repr__(self) -> str:
         return f"<RawIngestionRecord id={self.id!r} source={self.source_type!r}>"
@@ -82,6 +80,4 @@ class AuditLog(Base):
     )
 
     def __repr__(self) -> str:
-        return (
-            f"<AuditLog id={self.id} action={self.action!r} entity={self.entity_id!r}>"
-        )
+        return f"<AuditLog id={self.id} action={self.action!r} entity={self.entity_id!r}>"

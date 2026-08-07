@@ -142,9 +142,7 @@ class VectorStore:
     @property
     def _store(self) -> QdrantVectorStore:
         if self._lc_store is None:
-            raise RuntimeError(
-                "VectorStore not ready. Call ensure_collection() first."
-            )
+            raise RuntimeError("VectorStore not ready. Call ensure_collection() first.")
         return self._lc_store
 
     # ── Write ─────────────────────────────────────────────────────────────────

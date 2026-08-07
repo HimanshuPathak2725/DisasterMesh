@@ -52,16 +52,19 @@ def patch_get_db(db_session, monkeypatch):
     test session.  `autouse=True` applies to all tests in this package
     so ingest endpoint tests always use the in-memory DB.
     """
+
     async def _override():
         yield db_session
 
     # Patch the dependency on the router module
     import app.routers.ingest as ingest_mod
+
     monkeypatch.setattr(ingest_mod, "get_db", _override)
 
     # Also patch the app's dependency overrides
     from app.db import get_db
     from app.main import app
+
     app.dependency_overrides[get_db] = _override
     yield
     app.dependency_overrides.pop(get_db, None)

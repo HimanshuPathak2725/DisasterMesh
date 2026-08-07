@@ -50,8 +50,7 @@ def get_langchain_embeddings() -> HuggingFaceEmbeddings:
     global _lc_embeddings
     if _lc_embeddings is None:
         logger.info(
-            "Loading LangChain HuggingFaceEmbeddings model %r "
-            "(first call may download ~90 MB)",
+            "Loading LangChain HuggingFaceEmbeddings model %r (first call may download ~90 MB)",
             MODEL_NAME,
         )
         _lc_embeddings = HuggingFaceEmbeddings(
@@ -85,9 +84,7 @@ class EmbeddingService:
         """
         loop = asyncio.get_event_loop()
         # LangChain's embed_query is synchronous; run in executor
-        vector: list[float] = await loop.run_in_executor(
-            None, self._lc.embed_query, text
-        )
+        vector: list[float] = await loop.run_in_executor(None, self._lc.embed_query, text)
         return vector
 
     async def embed_incident(self, proto: ProtoIncident) -> list[float]:

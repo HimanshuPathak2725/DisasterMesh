@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 # ── Sensor alert thresholds ───────────────────────────────────────────────────
 
 SENSOR_ALERT_THRESHOLDS: dict[str, float] = {
-    "water_level": 3.0,   # metres — above this triggers a critical alert
+    "water_level": 3.0,  # metres — above this triggers a critical alert
     "air_quality": 300.0,  # AQI — above this is hazardous
 }
 
@@ -207,9 +207,7 @@ class SituationalAgent:
         logger.info("Social post normalised id=%s lang=%s", proto.id, language)
         return proto
 
-    async def process_satellite_polygon(
-        self, polygon: SatellitePolygonInput
-    ) -> ProtoIncident:
+    async def process_satellite_polygon(self, polygon: SatellitePolygonInput) -> ProtoIncident:
         """
         Extract the centroid of a GeoJSON polygon and normalise to a ProtoIncident.
 
@@ -219,9 +217,7 @@ class SituationalAgent:
         geometry = _extract_geometry(geojson)
 
         if geometry["type"] != "Polygon":
-            raise ValueError(
-                f"Unsupported geometry type {geometry['type']!r}; expected 'Polygon'."
-            )
+            raise ValueError(f"Unsupported geometry type {geometry['type']!r}; expected 'Polygon'.")
 
         lat, lon = _polygon_centroid(geometry["coordinates"])
         timestamp = polygon.timestamp or datetime.now(UTC)

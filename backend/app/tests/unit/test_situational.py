@@ -124,7 +124,11 @@ def test_extract_geometry_feature_collection() -> None:
     geojson = {
         "type": "FeatureCollection",
         "features": [
-            {"type": "Feature", "geometry": {"type": "Polygon", "coordinates": []}, "properties": {}},
+            {
+                "type": "Feature",
+                "geometry": {"type": "Polygon", "coordinates": []},
+                "properties": {},
+            },
         ],
     }
     geom = _extract_geometry(geojson)
