@@ -30,5 +30,7 @@
   "28": "SensorStreamInput",
   "29": "SocialPostInput",
   "30": "IngestResponse",
-  "31": "ProtoIncident"
+  "31": "ProtoIncident",
+  "32": "Any",
+  "33": "AsyncSession"
 }
