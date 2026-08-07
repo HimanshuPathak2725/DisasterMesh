@@ -1,0 +1,187 @@
+[
+  {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.22,
+                28.6
+              ],
+              [
+                77.24,
+                28.6
+              ],
+              [
+                77.24,
+                28.62
+              ],
+              [
+                77.22,
+                28.62
+              ],
+              [
+                77.22,
+                28.6
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": "sentinel_001",
+          "flood_depth_m": 0.8,
+          "timestamp": "2026-08-07T14:04:54.718724",
+          "note": "PLACEHOLDER — implement in Phase 1"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.24000000000001,
+                28.6
+              ],
+              [
+                77.26,
+                28.6
+              ],
+              [
+                77.26,
+                28.62
+              ],
+              [
+                77.24000000000001,
+                28.62
+              ],
+              [
+                77.24000000000001,
+                28.6
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": "sentinel_002",
+          "flood_depth_m": 1.1,
+          "timestamp": "2026-08-07T13:04:54.718732",
+          "note": "PLACEHOLDER — implement in Phase 1"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.26,
+                28.6
+              ],
+              [
+                77.28,
+                28.6
+              ],
+              [
+                77.28,
+                28.62
+              ],
+              [
+                77.26,
+                28.62
+              ],
+              [
+                77.26,
+                28.6
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": "sentinel_003",
+          "flood_depth_m": 1.4,
+          "timestamp": "2026-08-07T12:04:54.718737",
+          "note": "PLACEHOLDER — implement in Phase 1"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.28,
+                28.6
+              ],
+              [
+                77.3,
+                28.6
+              ],
+              [
+                77.3,
+                28.62
+              ],
+              [
+                77.28,
+                28.62
+              ],
+              [
+                77.28,
+                28.6
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": "sentinel_004",
+          "flood_depth_m": 1.7,
+          "timestamp": "2026-08-07T11:04:54.718741",
+          "note": "PLACEHOLDER — implement in Phase 1"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                77.3,
+                28.6
+              ],
+              [
+                77.32,
+                28.6
+              ],
+              [
+                77.32,
+                28.62
+              ],
+              [
+                77.3,
+                28.62
+              ],
+              [
+                77.3,
+                28.6
+              ]
+            ]
+          ]
+        },
+        "properties": {
+          "id": "sentinel_005",
+          "flood_depth_m": 2.0,
+          "timestamp": "2026-08-07T10:04:54.718745",
+          "note": "PLACEHOLDER — implement in Phase 1"
+        }
+      }
+    ]
+  }
+]

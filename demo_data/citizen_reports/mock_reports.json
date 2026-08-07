@@ -1,0 +1,202 @@
+[
+  {
+    "id": "sms_001",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 1 — implement in Phase 1",
+    "lat": 28.614900000000002,
+    "lon": 77.21000000000001,
+    "timestamp": "2026-08-07T15:01:54.717532"
+  },
+  {
+    "id": "sms_002",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 2 — implement in Phase 1",
+    "lat": 28.6159,
+    "lon": 77.211,
+    "timestamp": "2026-08-07T14:58:54.717713"
+  },
+  {
+    "id": "sms_003",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 3 — implement in Phase 1",
+    "lat": 28.6169,
+    "lon": 77.212,
+    "timestamp": "2026-08-07T14:55:54.717719"
+  },
+  {
+    "id": "sms_004",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 4 — implement in Phase 1",
+    "lat": 28.617900000000002,
+    "lon": 77.21300000000001,
+    "timestamp": "2026-08-07T14:52:54.717723"
+  },
+  {
+    "id": "sms_005",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 5 — implement in Phase 1",
+    "lat": 28.6189,
+    "lon": 77.214,
+    "timestamp": "2026-08-07T14:49:54.717726"
+  },
+  {
+    "id": "sms_006",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 6 — implement in Phase 1",
+    "lat": 28.6199,
+    "lon": 77.215,
+    "timestamp": "2026-08-07T14:46:54.717729"
+  },
+  {
+    "id": "sms_007",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 7 — implement in Phase 1",
+    "lat": 28.620900000000002,
+    "lon": 77.21600000000001,
+    "timestamp": "2026-08-07T14:43:54.717732"
+  },
+  {
+    "id": "sms_008",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 8 — implement in Phase 1",
+    "lat": 28.6219,
+    "lon": 77.217,
+    "timestamp": "2026-08-07T14:40:54.717735"
+  },
+  {
+    "id": "sms_009",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 9 — implement in Phase 1",
+    "lat": 28.6229,
+    "lon": 77.218,
+    "timestamp": "2026-08-07T14:37:54.717737"
+  },
+  {
+    "id": "sms_010",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 10 — implement in Phase 1",
+    "lat": 28.623900000000003,
+    "lon": 77.21900000000001,
+    "timestamp": "2026-08-07T14:34:54.717764"
+  },
+  {
+    "id": "sms_011",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 11 — implement in Phase 1",
+    "lat": 28.6249,
+    "lon": 77.22,
+    "timestamp": "2026-08-07T14:31:54.717766"
+  },
+  {
+    "id": "sms_012",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 12 — implement in Phase 1",
+    "lat": 28.6259,
+    "lon": 77.221,
+    "timestamp": "2026-08-07T14:28:54.717769"
+  },
+  {
+    "id": "sms_013",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 13 — implement in Phase 1",
+    "lat": 28.626900000000003,
+    "lon": 77.22200000000001,
+    "timestamp": "2026-08-07T14:25:54.717772"
+  },
+  {
+    "id": "sms_014",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 14 — implement in Phase 1",
+    "lat": 28.6279,
+    "lon": 77.223,
+    "timestamp": "2026-08-07T14:22:54.717774"
+  },
+  {
+    "id": "sms_015",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 15 — implement in Phase 1",
+    "lat": 28.6289,
+    "lon": 77.224,
+    "timestamp": "2026-08-07T14:19:54.717777"
+  },
+  {
+    "id": "sms_016",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 16 — implement in Phase 1",
+    "lat": 28.6299,
+    "lon": 77.22500000000001,
+    "timestamp": "2026-08-07T14:16:54.717779"
+  },
+  {
+    "id": "sms_017",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 17 — implement in Phase 1",
+    "lat": 28.6309,
+    "lon": 77.226,
+    "timestamp": "2026-08-07T14:13:54.717782"
+  },
+  {
+    "id": "sms_018",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 18 — implement in Phase 1",
+    "lat": 28.6319,
+    "lon": 77.227,
+    "timestamp": "2026-08-07T14:10:54.717784"
+  },
+  {
+    "id": "sms_019",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 19 — implement in Phase 1",
+    "lat": 28.6329,
+    "lon": 77.22800000000001,
+    "timestamp": "2026-08-07T14:07:54.717787"
+  },
+  {
+    "id": "sms_020",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 20 — implement in Phase 1",
+    "lat": 28.6339,
+    "lon": 77.229,
+    "timestamp": "2026-08-07T14:04:54.717789"
+  },
+  {
+    "id": "sms_021",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 21 — implement in Phase 1",
+    "lat": 28.634900000000002,
+    "lon": 77.23,
+    "timestamp": "2026-08-07T14:01:54.717792"
+  },
+  {
+    "id": "sms_022",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 22 — implement in Phase 1",
+    "lat": 28.6359,
+    "lon": 77.23100000000001,
+    "timestamp": "2026-08-07T13:58:54.717794"
+  },
+  {
+    "id": "sms_023",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 23 — implement in Phase 1",
+    "lat": 28.6369,
+    "lon": 77.232,
+    "timestamp": "2026-08-07T13:55:54.717797"
+  },
+  {
+    "id": "sms_024",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 24 — implement in Phase 1",
+    "lat": 28.637900000000002,
+    "lon": 77.233,
+    "timestamp": "2026-08-07T13:52:54.717799"
+  },
+  {
+    "id": "sms_025",
+    "source": "sms",
+    "text": "[PLACEHOLDER] Citizen report 25 — implement in Phase 1",
+    "lat": 28.6389,
+    "lon": 77.23400000000001,
+    "timestamp": "2026-08-07T13:49:54.717802"
+  }
+]

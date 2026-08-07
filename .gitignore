@@ -1,6 +1,6 @@
 # ─────────────────────────────────────────
 # DisasterMesh .gitignore
-# Stack: Python/FastAPI · React/Node · Docker · Qdrant · OR-Tools
+# Stack: Python/FastAPI · React/Node · Qdrant (local) · Upstash Redis · OR-Tools
 # Updated to match README repo layout
 # ─────────────────────────────────────────
 
@@ -82,10 +82,6 @@ frontend/.cache/
 *.tsbuildinfo
 next-env.d.ts
 
-# ── Docker ────────────────────────────────
-infra/.env
-docker-compose.override.yml
-
 # Qdrant local data volume (if mounted locally)
 qdrant_storage/
 qdrant_data/
@@ -165,3 +161,5 @@ poetry.lock
 tmp/
 temp/
 .cache/
+plan.md
+.gitkeep

@@ -1,0 +1,631 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "graphify.md",
+      "file_type": "document",
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_rules_graphify",
+      "community": 3,
+      "norm_label": "graphify.md"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "agents_rules_graphify_graphify",
+      "community": 3,
+      "norm_label": "graphify"
+    },
+    {
+      "label": "graphify.md",
+      "file_type": "document",
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_workflows_graphify",
+      "community": 4,
+      "norm_label": "graphify.md"
+    },
+    {
+      "label": "Workflow: graphify",
+      "file_type": "document",
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "agents_workflows_graphify_workflow_graphify",
+      "community": 4,
+      "norm_label": "workflow: graphify"
+    },
+    {
+      "label": "AGENTS.md",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents",
+      "community": 2,
+      "norm_label": "agents.md"
+    },
+    {
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "AGENTS.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "agents_graphify",
+      "community": 2,
+      "norm_label": "graphify"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme",
+      "community": 0,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "\ud83c\udf10 DisasterMesh",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme_disastermesh",
+      "community": 0,
+      "norm_label": "\ud83c\udf10 disastermesh"
+    },
+    {
+      "label": "\ud83d\udcd1 Table of contents",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "readme_table_of_contents",
+      "community": 0,
+      "norm_label": "\ud83d\udcd1 table of contents"
+    },
+    {
+      "label": "\ud83e\udded Project overview",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "readme_project_overview",
+      "community": 0,
+      "norm_label": "\ud83e\udded project overview"
+    },
+    {
+      "label": "\ud83c\udfd7\ufe0f Architecture",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "readme_architecture",
+      "community": 1,
+      "norm_label": "\ud83c\udfd7\ufe0f architecture"
+    },
+    {
+      "label": "1\ufe0f\u20e3 Situational Agent \u2014 Intake & Fusion",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "readme_1_situational_agent_intake_fusion",
+      "community": 1,
+      "norm_label": "1\ufe0f\u20e3 situational agent \u2014 intake & fusion"
+    },
+    {
+      "label": "2\ufe0f\u20e3 Verification Agent \u2014 Dedup & Confidence",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "readme_2_verification_agent_dedup_confidence",
+      "community": 1,
+      "norm_label": "2\ufe0f\u20e3 verification agent \u2014 dedup & confidence"
+    },
+    {
+      "label": "3\ufe0f\u20e3 Victim Agent \u2014 Needs & Severity",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "readme_3_victim_agent_needs_severity",
+      "community": 1,
+      "norm_label": "3\ufe0f\u20e3 victim agent \u2014 needs & severity"
+    },
+    {
+      "label": "4\ufe0f\u20e3 Resource Agent \u2014 Responder State",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L64",
+      "_origin": "ast",
+      "id": "readme_4_resource_agent_responder_state",
+      "community": 1,
+      "norm_label": "4\ufe0f\u20e3 resource agent \u2014 responder state"
+    },
+    {
+      "label": "5\ufe0f\u20e3 Orchestrator Agent \u2014 Optimization & Dispatch",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "_origin": "ast",
+      "id": "readme_5_orchestrator_agent_optimization_dispatch",
+      "community": 1,
+      "norm_label": "5\ufe0f\u20e3 orchestrator agent \u2014 optimization & dispatch"
+    },
+    {
+      "label": "6\ufe0f\u20e3 Communication Agent \u2014 Notify & Track",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "readme_6_communication_agent_notify_track",
+      "community": 1,
+      "norm_label": "6\ufe0f\u20e3 communication agent \u2014 notify & track"
+    },
+    {
+      "label": "\ud83d\udd04 Data flow",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "readme_data_flow",
+      "community": 0,
+      "norm_label": "\ud83d\udd04 data flow"
+    },
+    {
+      "label": "\ud83d\udee0\ufe0f Tech stack",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "readme_tech_stack",
+      "community": 0,
+      "norm_label": "\ud83d\udee0\ufe0f tech stack"
+    },
+    {
+      "label": "\ud83d\udcc1 Repository layout",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L133",
+      "_origin": "ast",
+      "id": "readme_repository_layout",
+      "community": 0,
+      "norm_label": "\ud83d\udcc1 repository layout"
+    },
+    {
+      "label": "\ud83d\udce6 Data schema",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "readme_data_schema",
+      "community": 5,
+      "norm_label": "\ud83d\udce6 data schema"
+    },
+    {
+      "label": "Canonical incident record (Qdrant `incidents` collection)",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "readme_canonical_incident_record_qdrant_incidents_collection",
+      "community": 5,
+      "norm_label": "canonical incident record (qdrant `incidents` collection)"
+    },
+    {
+      "label": "\ud83d\udd0c API reference",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L203",
+      "_origin": "ast",
+      "id": "readme_api_reference",
+      "community": 0,
+      "norm_label": "\ud83d\udd0c api reference"
+    },
+    {
+      "label": "\ud83d\udd10 Environment variables",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L237",
+      "_origin": "ast",
+      "id": "readme_environment_variables",
+      "community": 0,
+      "norm_label": "\ud83d\udd10 environment variables"
+    },
+    {
+      "label": "\ud83c\udf31 Seeding demo data",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L263",
+      "_origin": "ast",
+      "id": "readme_seeding_demo_data",
+      "community": 0,
+      "norm_label": "\ud83c\udf31 seeding demo data"
+    },
+    {
+      "label": "\u25b6\ufe0f Running a demo scenario",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L279",
+      "_origin": "ast",
+      "id": "readme_running_a_demo_scenario",
+      "community": 0,
+      "norm_label": "\u25b6\ufe0f running a demo scenario"
+    },
+    {
+      "label": "\u2705 Testing",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L291",
+      "_origin": "ast",
+      "id": "readme_testing",
+      "community": 0,
+      "norm_label": "\u2705 testing"
+    },
+    {
+      "label": "\ud83d\ude80 Deployment",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L303",
+      "_origin": "ast",
+      "id": "readme_deployment",
+      "community": 0,
+      "norm_label": "\ud83d\ude80 deployment"
+    },
+    {
+      "label": "\ud83d\udca1 Operational notes",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L315",
+      "_origin": "ast",
+      "id": "readme_operational_notes",
+      "community": 0,
+      "norm_label": "\ud83d\udca1 operational notes"
+    },
+    {
+      "label": "\ud83d\uddfa\ufe0f Roadmap",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L323",
+      "_origin": "ast",
+      "id": "readme_roadmap",
+      "community": 0,
+      "norm_label": "\ud83d\uddfa\ufe0f roadmap"
+    },
+    {
+      "label": "\ud83e\udd1d Contributing",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L333",
+      "_origin": "ast",
+      "id": "readme_contributing",
+      "community": 0,
+      "norm_label": "\ud83e\udd1d contributing"
+    },
+    {
+      "label": "\ud83d\udcc4 License",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L343",
+      "_origin": "ast",
+      "id": "readme_license",
+      "community": 0,
+      "norm_label": "\ud83d\udcc4 license"
+    },
+    {
+      "label": "\ud83d\ude4f Acknowledgements",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L347",
+      "_origin": "ast",
+      "id": "readme_acknowledgements",
+      "community": 0,
+      "norm_label": "\ud83d\ude4f acknowledgements"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/rules/graphify.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "agents_rules_graphify",
+      "target": "agents_rules_graphify_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".agents/workflows/graphify.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "agents_workflows_graphify",
+      "target": "agents_workflows_graphify_workflow_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "AGENTS.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "agents",
+      "target": "agents_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_disastermesh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L347",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_acknowledgements",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L203",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_api_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_contributing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_data_flow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_data_schema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L303",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_deployment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L237",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_environment_variables",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L343",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_license",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L315",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_operational_notes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_project_overview",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_repository_layout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L323",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_roadmap",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L279",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_running_a_demo_scenario",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L263",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_seeding_demo_data",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_table_of_contents",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_tech_stack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L291",
+      "weight": 1.0,
+      "source": "readme_disastermesh",
+      "target": "readme_testing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_1_situational_agent_intake_fusion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_2_verification_agent_dedup_confidence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_3_victim_agent_needs_severity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_4_resource_agent_responder_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_5_orchestrator_agent_optimization_dispatch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "readme_architecture",
+      "target": "readme_6_communication_agent_notify_track",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "readme_data_schema",
+      "target": "readme_canonical_incident_record_qdrant_incidents_collection",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "1fcc0eaddbd53db0d5986d66345416f60ef6148e"
+}

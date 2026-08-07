@@ -118,7 +118,8 @@ Resource Agent   Orchestrator Agent
 |---|---|
 | Backend | Python 3.11+, FastAPI (async) |
 | Agent orchestration | Function-call pipeline, optionally CrewAI or LangGraph |
-| Vector memory | Qdrant (self-hosted or cloud) |
+| Vector memory | Qdrant — local file mode via `qdrant-client` (`path=`), Qdrant Cloud for production |
+| Cache / task queue | Redis — [Upstash](https://upstash.com) free tier (local + production), or [Redis Cloud](https://redis.io/cloud) |
 | LLM | Any bilingual model (Claude, Gemini, etc.) for extraction/translation |
 | Satellite data | Pre-downloaded Sentinel-2 GeoJSONs + NASA FIRMS REST for thermal alerts |
 | Geocoding | OpenStreetMap / Nominatim + local landmark lookup table for Hindi transliterations |
@@ -126,7 +127,7 @@ Resource Agent   Orchestrator Agent
 | Realtime | Server-sent events, or Socket.io as an alternative |
 | Messaging | Twilio SMS (demo), WhatsApp Business API (optional) |
 | Image hosting | Cloudinary or S3 |
-| Frontend | React + Mapbox GL JS |
+| Frontend | Next.js 14+ (App Router) + Mapbox GL JS |
 
 ---
 
@@ -158,9 +159,7 @@ disastermesh/
 │   ├── responder_registry.json    # 5–8 responder teams with capabilities
 │   ├── population_density.geojson # Tagged POIs (school, hospital, metro)
 │   └── authority_alerts.json      # Mock IMD/authority alerts
-├── infra/
-│   └── docker-compose.yml         # Qdrant + Redis
-└── frontend/                      # React + Mapbox dashboard
+└── frontend/                      # Next.js 14+ app (App Router) + Mapbox GL JS
 ```
 
 ---
@@ -239,21 +238,46 @@ Full request/response schemas live in `backend/app/schemas.py`.
 Create a `.env` file in `backend/` with:
 
 ```env
-QDRANT_URL=http://localhost:6333
+# ── Qdrant ────────────────────────────────────────────────────────────
+# Leave blank to use local file mode (path="./qdrant_data") — no Docker needed.
+# Set to your Qdrant Cloud URL for production.
+QDRANT_URL=
 QDRANT_API_KEY=
+QDRANT_LOCAL_PATH=./qdrant_data   # used only when QDRANT_URL is empty
 
+# ── Database ──────────────────────────────────────────────────────────
 DATABASE_URL=sqlite:///./dev.db
 
+# ── Frontend / Maps ───────────────────────────────────────────────────
 MAPBOX_TOKEN=
 
+# ── Messaging (optional for demo) ─────────────────────────────────────
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_FROM_NUMBER=
 
+# ── Data paths ────────────────────────────────────────────────────────
 SENTINEL_DATA_DIR=./demo_data/satellite
 S3_BUCKET=
 
+# ── Optimization ──────────────────────────────────────────────────────
 ORTOOLS_SCALAR_WEIGHTS=
+```
+
+**Qdrant connection logic** — add this helper to `backend/app/db.py`:
+
+```python
+import os
+from qdrant_client import QdrantClient
+
+def get_qdrant_client() -> QdrantClient:
+    url = os.getenv("QDRANT_URL", "").strip()
+    if url:
+        # Qdrant Cloud
+        return QdrantClient(url=url, api_key=os.getenv("QDRANT_API_KEY"))
+    # Local file mode — data persists in ./qdrant_data
+    path = os.getenv("QDRANT_LOCAL_PATH", "./qdrant_data")
+    return QdrantClient(path=path)
 ```
 
 For a demo, `DATABASE_URL` can stay on SQLite. Switch to Postgres for anything beyond local testing — you'll want relational queries over incident/responder history that Qdrant alone won't give you cleanly.
@@ -302,11 +326,12 @@ pytest -q
 
 ## 🚀 Deployment
 
-| Component | Recommended target |
-|---|---|
-| Frontend | Vercel |
-| Backend | Render / Fly.io |
-| Qdrant | Qdrant Cloud or self-hosted Docker |
+| Component | Local dev | Production |
+|---|---|---|
+| Frontend | `npm run dev` | Vercel |
+| Backend | `uvicorn` with `--reload` | Render / Fly.io |
+| Qdrant | Local file mode (`path=`) | Qdrant Cloud |
+| Redis | [Upstash](https://upstash.com) free tier | [Upstash](https://upstash.com) or [Redis Cloud](https://redis.io/cloud) |
 
 Use environment variables to cleanly separate demo mode (mock data, no real SMS sending) from production mode (real Twilio/WhatsApp, real satellite feeds).
 

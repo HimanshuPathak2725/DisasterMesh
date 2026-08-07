@@ -1,0 +1,22 @@
+{
+  ".agents/rules/graphify.md": {
+    "mtime": 1786111297.6297648,
+    "ast_hash": "f1e53ecc9194573d3c28fc116c743a2e",
+    "semantic_hash": ""
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1786111297.6298938,
+    "ast_hash": "0bc020d491fca99550c1ea3de0a5f862",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1786111256.8329823,
+    "ast_hash": "6a47d64fcc136324ca395065a707ef76",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1786112647.1680524,
+    "ast_hash": "09ca6bb0aca29bedd4ff1f4721ecc2f2",
+    "semantic_hash": ""
+  }
+}
