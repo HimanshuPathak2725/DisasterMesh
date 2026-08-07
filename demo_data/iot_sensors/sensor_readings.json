@@ -1,0 +1,112 @@
+[
+  {
+    "id": "sensor_001",
+    "sensor_id": "yamuna_gauge_001",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 3.96,
+    "unit": "metres",
+    "lat": 28.6667,
+    "lon": 77.2333,
+    "timestamp": "2026-08-07T19:55:57.973891+00:00"
+  },
+  {
+    "id": "sensor_002",
+    "sensor_id": "yamuna_gauge_002",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 4.18,
+    "unit": "metres",
+    "lat": 28.6741,
+    "lon": 77.2896,
+    "timestamp": "2026-08-07T19:45:57.973899+00:00"
+  },
+  {
+    "id": "sensor_003",
+    "sensor_id": "yamuna_gauge_003",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 2.1,
+    "unit": "metres",
+    "lat": 28.608,
+    "lon": 77.2957,
+    "timestamp": "2026-08-07T19:35:57.973903+00:00"
+  },
+  {
+    "id": "sensor_004",
+    "sensor_id": "aq_sensor_cp_001",
+    "sensor_type": "air_quality",
+    "source": "iot_sensor",
+    "value": 169.86,
+    "unit": "AQI",
+    "lat": 28.6315,
+    "lon": 77.2167,
+    "timestamp": "2026-08-07T19:25:57.973907+00:00"
+  },
+  {
+    "id": "sensor_005",
+    "sensor_id": "aq_sensor_okhla_001",
+    "sensor_type": "air_quality",
+    "source": "iot_sensor",
+    "value": 283.74,
+    "unit": "AQI",
+    "lat": 28.5355,
+    "lon": 77.2741,
+    "timestamp": "2026-08-07T19:15:57.973911+00:00"
+  },
+  {
+    "id": "sensor_006",
+    "sensor_id": "yamuna_gauge_004",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 3.04,
+    "unit": "metres",
+    "lat": 28.5674,
+    "lon": 77.2431,
+    "timestamp": "2026-08-07T19:05:57.973914+00:00"
+  },
+  {
+    "id": "sensor_007",
+    "sensor_id": "aq_sensor_shahdara_001",
+    "sensor_type": "air_quality",
+    "source": "iot_sensor",
+    "value": 225.61,
+    "unit": "AQI",
+    "lat": 28.6741,
+    "lon": 77.2896,
+    "timestamp": "2026-08-07T18:55:57.973917+00:00"
+  },
+  {
+    "id": "sensor_008",
+    "sensor_id": "yamuna_gauge_005",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 5.4,
+    "unit": "metres",
+    "lat": 28.6562,
+    "lon": 77.241,
+    "timestamp": "2026-08-07T18:45:57.973921+00:00"
+  },
+  {
+    "id": "sensor_009",
+    "sensor_id": "aq_sensor_noida_001",
+    "sensor_type": "air_quality",
+    "source": "iot_sensor",
+    "value": 142.74,
+    "unit": "AQI",
+    "lat": 28.5679,
+    "lon": 77.3213,
+    "timestamp": "2026-08-07T18:35:57.973924+00:00"
+  },
+  {
+    "id": "sensor_010",
+    "sensor_id": "yamuna_gauge_006",
+    "sensor_type": "water_level",
+    "source": "iot_sensor",
+    "value": 4.29,
+    "unit": "metres",
+    "lat": 28.6703,
+    "lon": 77.2254,
+    "timestamp": "2026-08-07T18:25:57.973927+00:00"
+  }
+]

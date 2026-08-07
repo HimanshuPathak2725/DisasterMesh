@@ -2,201 +2,226 @@
   {
     "id": "sms_001",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 1 — implement in Phase 1",
-    "lat": 28.614900000000002,
-    "lon": 77.21000000000001,
-    "timestamp": "2026-08-07T15:01:54.717532"
+    "text": "Shop basement flooded at Yamuna Bazar. Two people trapped inside. Need rescue.",
+    "lat": 28.665923,
+    "lon": 77.233783,
+    "timestamp": "2026-08-07T19:55:57.971933+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_002",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 2 — implement in Phase 1",
-    "lat": 28.6159,
-    "lon": 77.211,
-    "timestamp": "2026-08-07T14:58:54.717713"
+    "text": "My house near Lal Qila Chowk is submerged. Water is up to my waist. Please evacuate us.",
+    "lat": 28.655646,
+    "lon": 77.241473,
+    "timestamp": "2026-08-07T19:51:27.972066+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_003",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 3 — implement in Phase 1",
-    "lat": 28.6169,
-    "lon": 77.212,
-    "timestamp": "2026-08-07T14:55:54.717719"
+    "text": "Kashmere Gate में बाढ़ आ गई है। छत पर फंसे हैं। बचाओ।",
+    "lat": 28.667881,
+    "lon": 77.227464,
+    "timestamp": "2026-08-07T19:46:57.972073+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_004",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 4 — implement in Phase 1",
-    "lat": 28.617900000000002,
-    "lon": 77.21300000000001,
-    "timestamp": "2026-08-07T14:52:54.717723"
+    "source": "whatsapp",
+    "text": "Flooding at ISBT Delhi. Children and elderly trapped on rooftop. Send rescue.",
+    "lat": 28.669737,
+    "lon": 77.225411,
+    "timestamp": "2026-08-07T19:42:27.972076+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_005",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 5 — implement in Phase 1",
-    "lat": 28.6189,
-    "lon": 77.214,
-    "timestamp": "2026-08-07T14:49:54.717726"
+    "text": "Water rising fast near Shahdara. Road blocked. Need boats urgently.",
+    "lat": 28.674222,
+    "lon": 77.290032,
+    "timestamp": "2026-08-07T19:37:57.972079+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_006",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 6 — implement in Phase 1",
-    "lat": 28.6199,
-    "lon": 77.215,
-    "timestamp": "2026-08-07T14:46:54.717729"
+    "text": "Mayur Vihar Phase 1 में पानी बहुत है। दवाइयाँ खत्म हो गई हैं। अस्पताल नहीं जा सकते।",
+    "lat": 28.607441,
+    "lon": 77.295879,
+    "timestamp": "2026-08-07T19:33:27.972082+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_007",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 7 — implement in Phase 1",
-    "lat": 28.620900000000002,
-    "lon": 77.21600000000001,
-    "timestamp": "2026-08-07T14:43:54.717732"
+    "text": "Water rising fast near Okhla. Road blocked. Need boats urgently.",
+    "lat": 28.536018,
+    "lon": 77.273419,
+    "timestamp": "2026-08-07T19:28:57.972084+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_008",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 8 — implement in Phase 1",
-    "lat": 28.6219,
-    "lon": 77.217,
-    "timestamp": "2026-08-07T14:40:54.717735"
+    "source": "whatsapp",
+    "text": "Flood near Lajpat Nagar. Elderly woman needs medical attention. No ambulance available.",
+    "lat": 28.567081,
+    "lon": 77.242411,
+    "timestamp": "2026-08-07T19:24:27.972087+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_009",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 9 — implement in Phase 1",
-    "lat": 28.6229,
-    "lon": 77.218,
-    "timestamp": "2026-08-07T14:37:54.717737"
+    "text": "Noida Sector 18 के पास सड़क बंद है। राशन नहीं है। मदद करो।",
+    "lat": 28.567104,
+    "lon": 77.32106,
+    "timestamp": "2026-08-07T19:19:57.972089+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_010",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 10 — implement in Phase 1",
-    "lat": 28.623900000000003,
-    "lon": 77.21900000000001,
-    "timestamp": "2026-08-07T14:34:54.717764"
+    "text": "Water level rising quickly at Connaught Place. Ground floor completely underwater.",
+    "lat": 28.632195,
+    "lon": 77.216907,
+    "timestamp": "2026-08-07T19:15:27.972092+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_011",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 11 — implement in Phase 1",
-    "lat": 28.6249,
-    "lon": 77.22,
-    "timestamp": "2026-08-07T14:31:54.717766"
+    "text": "Water rising fast near Yamuna Bazar. Road blocked. Need boats urgently.",
+    "lat": 28.667159,
+    "lon": 77.233372,
+    "timestamp": "2026-08-07T19:10:57.972094+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_012",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 12 — implement in Phase 1",
-    "lat": 28.6259,
-    "lon": 77.221,
-    "timestamp": "2026-08-07T14:28:54.717769"
+    "source": "whatsapp",
+    "text": "Lal Qila Chowk में पानी बहुत है। दवाइयाँ खत्म हो गई हैं। अस्पताल नहीं जा सकते।",
+    "lat": 28.655358,
+    "lon": 77.240586,
+    "timestamp": "2026-08-07T19:06:27.972096+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_013",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 13 — implement in Phase 1",
-    "lat": 28.626900000000003,
-    "lon": 77.22200000000001,
-    "timestamp": "2026-08-07T14:25:54.717772"
+    "text": "Shop basement flooded at Kashmere Gate. Two people trapped inside. Need rescue.",
+    "lat": 28.667937,
+    "lon": 77.229123,
+    "timestamp": "2026-08-07T19:01:57.972099+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_014",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 14 — implement in Phase 1",
-    "lat": 28.6279,
-    "lon": 77.223,
-    "timestamp": "2026-08-07T14:22:54.717774"
+    "text": "ISBT Delhi bridge submerged. Emergency vehicles cannot pass. People cut off.",
+    "lat": 28.669685,
+    "lon": 77.224539,
+    "timestamp": "2026-08-07T18:57:27.972101+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_015",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 15 — implement in Phase 1",
-    "lat": 28.6289,
-    "lon": 77.224,
-    "timestamp": "2026-08-07T14:19:54.717777"
+    "text": "मेरा घर Shahdara के पास डूब गया है। निकालो हमें।",
+    "lat": 28.674646,
+    "lon": 77.29057,
+    "timestamp": "2026-08-07T18:52:57.972103+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_016",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 16 — implement in Phase 1",
-    "lat": 28.6299,
-    "lon": 77.22500000000001,
-    "timestamp": "2026-08-07T14:16:54.717779"
+    "source": "whatsapp",
+    "text": "My house near Mayur Vihar Phase 1 is submerged. Water is up to my waist. Please evacuate us.",
+    "lat": 28.608733,
+    "lon": 77.29546,
+    "timestamp": "2026-08-07T18:48:27.972105+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_017",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 17 — implement in Phase 1",
-    "lat": 28.6309,
-    "lon": 77.226,
-    "timestamp": "2026-08-07T14:13:54.717782"
+    "text": "Flash flood at Okhla junction. People stuck on buses. Send rescue teams.",
+    "lat": 28.535771,
+    "lon": 77.27383,
+    "timestamp": "2026-08-07T18:43:57.972107+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_018",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 18 — implement in Phase 1",
-    "lat": 28.6319,
-    "lon": 77.227,
-    "timestamp": "2026-08-07T14:10:54.717784"
+    "text": "Lajpat Nagar के पास सड़क बंद है। राशन नहीं है। मदद करो।",
+    "lat": 28.567111,
+    "lon": 77.24344,
+    "timestamp": "2026-08-07T18:39:27.972110+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_019",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 19 — implement in Phase 1",
-    "lat": 28.6329,
-    "lon": 77.22800000000001,
-    "timestamp": "2026-08-07T14:07:54.717787"
+    "text": "Homeless shelter near Noida Sector 18 submerged. 40 people need evacuation.",
+    "lat": 28.568773,
+    "lon": 77.321596,
+    "timestamp": "2026-08-07T18:34:57.972112+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_020",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 20 — implement in Phase 1",
-    "lat": 28.6339,
-    "lon": 77.229,
-    "timestamp": "2026-08-07T14:04:54.717789"
+    "source": "whatsapp",
+    "text": "Connaught Place bridge submerged. Emergency vehicles cannot pass. People cut off.",
+    "lat": 28.63177,
+    "lon": 77.216768,
+    "timestamp": "2026-08-07T18:30:27.972114+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_021",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 21 — implement in Phase 1",
-    "lat": 28.634900000000002,
-    "lon": 77.23,
-    "timestamp": "2026-08-07T14:01:54.717792"
+    "text": "मेरा घर Yamuna Bazar के पास डूब गया है। निकालो हमें।",
+    "lat": 28.666027,
+    "lon": 77.233059,
+    "timestamp": "2026-08-07T18:25:57.972116+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_022",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 22 — implement in Phase 1",
-    "lat": 28.6359,
-    "lon": 77.23100000000001,
-    "timestamp": "2026-08-07T13:58:54.717794"
+    "text": "Shop basement flooded at Lal Qila Chowk. Two people trapped inside. Need rescue.",
+    "lat": 28.656576,
+    "lon": 77.240439,
+    "timestamp": "2026-08-07T18:21:27.972118+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_023",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 23 — implement in Phase 1",
-    "lat": 28.6369,
-    "lon": 77.232,
-    "timestamp": "2026-08-07T13:55:54.717797"
+    "text": "Water level rising quickly at Kashmere Gate. Ground floor completely underwater.",
+    "lat": 28.668386,
+    "lon": 77.228952,
+    "timestamp": "2026-08-07T18:16:57.972122+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_024",
-    "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 24 — implement in Phase 1",
-    "lat": 28.637900000000002,
-    "lon": 77.233,
-    "timestamp": "2026-08-07T13:52:54.717799"
+    "source": "whatsapp",
+    "text": "मेरा घर ISBT Delhi के पास डूब गया है। निकालो हमें।",
+    "lat": 28.670944,
+    "lon": 77.22601,
+    "timestamp": "2026-08-07T18:12:27.972124+00:00",
+    "media_urls": []
   },
   {
     "id": "sms_025",
     "source": "sms",
-    "text": "[PLACEHOLDER] Citizen report 25 — implement in Phase 1",
-    "lat": 28.6389,
-    "lon": 77.23400000000001,
-    "timestamp": "2026-08-07T13:49:54.717802"
+    "text": "Flood near Shahdara. Elderly woman needs medical attention. No ambulance available.",
+    "lat": 28.673635,
+    "lon": 77.289022,
+    "timestamp": "2026-08-07T18:07:57.972127+00:00",
+    "media_urls": []
   }
 ]

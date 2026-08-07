@@ -13,6 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
+from app.db import init_db
 from app.routers import dispatch, health, incidents, ingest
 
 settings = get_settings()
@@ -27,8 +28,11 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("DisasterMesh API starting — env=%s", settings.app_env)
+    await init_db()
+    logger.info("Database tables initialised")
     yield
     logger.info("DisasterMesh API shutting down")
+
 
 
 # ── App ───────────────────────────────────────────────────────────────────────

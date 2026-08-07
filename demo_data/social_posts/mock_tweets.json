@@ -2,121 +2,181 @@
   {
     "id": "tweet_001",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 1 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:59:54.718342"
+    "text": "BREAKING: Major flooding at Yamuna Bazar, Delhi. Roads impassable. #DelhiFloods #Yamuna",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000000",
+    "lat": 28.671129,
+    "lon": 77.237064,
+    "timestamp": "2026-08-07T19:55:57.972938+00:00"
   },
   {
     "id": "tweet_002",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 2 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:54:54.718349"
+    "text": "Situation at Lal Qila Chowk critical. Water levels rising. Local authorities not responding. #DelhiFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000001",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:49:57.972951+00:00"
   },
   {
     "id": "tweet_003",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 3 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:49:54.718352"
+    "text": "Massive waterlogging near Kashmere Gate. Commuters stranded for hours. #DelhiRains #Flood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000002",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:43:57.972956+00:00"
   },
   {
     "id": "tweet_004",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 4 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:44:54.718355"
+    "text": "Flood alert: ISBT Delhi area has 4+ feet of water. Residents advised to move to higher ground.",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000003",
+    "lat": 28.668447,
+    "lon": 77.226954,
+    "timestamp": "2026-08-07T19:37:57.972962+00:00"
   },
   {
     "id": "tweet_005",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 5 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:39:54.718358"
+    "text": "URGENT: Shahdara residents need rescue. 20+ families trapped. RT to spread awareness. #IndiaFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000004",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:31:57.972966+00:00"
   },
   {
     "id": "tweet_006",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 6 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:34:54.718360"
+    "text": "Water entered homes near Mayur Vihar Phase 1. People on rooftops. @CMDelhi @NDRF please help. #DelhiFloods",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000005",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:25:57.972969+00:00"
   },
   {
     "id": "tweet_007",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 7 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:29:54.718362"
+    "text": "Just saw the situation at Okhla. Absolutely devastating. Roads look like rivers. #DelhiRains",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000006",
+    "lat": 28.534456,
+    "lon": 77.278245,
+    "timestamp": "2026-08-07T19:19:57.972973+00:00"
   },
   {
     "id": "tweet_008",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 8 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:24:54.718365"
+    "text": "Volunteer teams heading to Lajpat Nagar for rescue ops. Need boats, food, medical supplies. #DisasterRelief",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000007",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:13:57.972976+00:00"
   },
   {
     "id": "tweet_009",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 9 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:19:54.718367"
+    "text": "Water level at Yamuna dangerously high. Noida Sector 18 area at risk. Stay safe. #YamunaFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000008",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T19:07:57.972979+00:00"
   },
   {
     "id": "tweet_010",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 10 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:14:54.718370"
+    "text": "Update: Rescue teams arrived at Connaught Place. 50 people evacuated so far. @NDRF doing amazing work.",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000009",
+    "lat": 28.631089,
+    "lon": 77.214349,
+    "timestamp": "2026-08-07T19:01:57.972984+00:00"
   },
   {
     "id": "tweet_011",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 11 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:09:54.718372"
+    "text": "LIVE: Aerial view of flooding near Yamuna Bazar. Situation worse than yesterday. #DelhiFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000010",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:55:57.972987+00:00"
   },
   {
     "id": "tweet_012",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 12 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T14:04:54.718374"
+    "text": "Schools near Lal Qila Chowk to remain closed tomorrow due to severe flooding. #DelhiRains",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000011",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:49:57.972990+00:00"
   },
   {
     "id": "tweet_013",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 13 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:59:54.718377"
+    "text": "Kashmere Gate substation flooded. Power outage for 10,000+ homes. @BSES_Delhi please respond.",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000012",
+    "lat": 28.665166,
+    "lon": 77.229014,
+    "timestamp": "2026-08-07T18:43:57.972994+00:00"
   },
   {
     "id": "tweet_014",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 14 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:54:54.718379"
+    "text": "Yamuna crossed danger mark. ISBT Delhi completely inundated. Govt relief camp set up. #DelhiFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000013",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:37:57.972997+00:00"
   },
   {
     "id": "tweet_015",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 15 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:49:54.718381"
+    "text": "Volunteers needed at Shahdara relief camp. Bring dry food, drinking water, blankets. #DelhiHelps",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000014",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:31:57.973000+00:00"
   },
   {
     "id": "tweet_016",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 16 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:44:54.718383"
+    "text": "BREAKING: Major flooding at Mayur Vihar Phase 1, Delhi. Roads impassable. #DelhiFloods #Yamuna",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000015",
+    "lat": 28.605627,
+    "lon": 77.296546,
+    "timestamp": "2026-08-07T18:25:57.973004+00:00"
   },
   {
     "id": "tweet_017",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 17 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:39:54.718386"
+    "text": "Situation at Okhla critical. Water levels rising. Local authorities not responding. #DelhiFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000016",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:19:57.973007+00:00"
   },
   {
     "id": "tweet_018",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 18 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:34:54.718388"
+    "text": "Massive waterlogging near Lajpat Nagar. Commuters stranded for hours. #DelhiRains #Flood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000017",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:13:57.973010+00:00"
   },
   {
     "id": "tweet_019",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 19 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:29:54.718390"
+    "text": "Flood alert: Noida Sector 18 area has 4+ feet of water. Residents advised to move to higher ground.",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000018",
+    "lat": 28.571878,
+    "lon": 77.320294,
+    "timestamp": "2026-08-07T18:07:57.973014+00:00"
   },
   {
     "id": "tweet_020",
     "source": "tweet",
-    "text": "[PLACEHOLDER] Social post 20 #Flood #Delhi — implement in Phase 1",
-    "timestamp": "2026-08-07T13:24:54.718393"
+    "text": "URGENT: Connaught Place residents need rescue. 20+ families trapped. RT to spread awareness. #IndiaFlood",
+    "url": "https://twitter.com/DisasterMesh/status/1900000000019",
+    "lat": null,
+    "lon": null,
+    "timestamp": "2026-08-07T18:01:57.973017+00:00"
   }
 ]

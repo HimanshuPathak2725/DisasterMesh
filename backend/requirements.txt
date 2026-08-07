@@ -9,6 +9,7 @@ pydantic-settings
 # ── Database / ORM ────────────────────────────────────────────────────────────
 sqlalchemy
 aiosqlite
+greenlet         # required by SQLAlchemy async (greenlet-based concurrency)
 
 # ── Vector store ──────────────────────────────────────────────────────────────
 qdrant-client
