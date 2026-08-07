@@ -1,208 +1,349 @@
-# DisasterMesh
+# 🌐 DisasterMesh
 
-DisasterMesh is a technical reference implementation of a unified, multi-agent disaster response architecture. This README focuses on the system design, required data, developer setup, runtime components, and operational notes needed to run and extend the project.
+**A multi-agent disaster response coordination system that fuses multi-source crisis signals into verified, prioritized, and dispatched incidents in real time.**
 
-Table of contents
-- Project overview
-- Architecture (6 agents)
-- Data flow
-- Tech stack
-- Data & demo assets
-- Qdrant schema & vector design
-- API surface (backend)
-- Local development (prerequisites & steps)
-- Deployment notes
-- Testing & validation
-- Contributing
-- License
+DisasterMesh ingests reports from satellites, social media, citizens, and IoT sensors, deduplicates and verifies them, scores severity, matches available responders, and closes the loop with real-time notifications — all through a pipeline of six coordinated agents.
 
-## Project overview
-DisasterMesh implements a 6-agent pipeline for fusing multi-source crisis signals (satellite, social, citizen reports, IoT) into verified incidents, scoring severity, matching responders, and closing the communication loop with affected citizens and responders. It is designed as a modular backend (FastAPI), vector memory (Qdrant), and optional frontend (React + Mapbox) demo.
+---
 
-Goals:
-- Demonstrate multi-source fusion and confidence scoring
-- Provide an explainable severity/prioritization layer for incidents
-- Provide a working optimizer for responder dispatch (OR-Tools)
-- Provide demonstrable, repeatable local dev workflow using mock data
+## 📑 Table of contents
 
-## Architecture (6 agents)
-Each agent is a modular microservice or callable backend component. The architecture assumes shared vector memory (Qdrant) and a FastAPI orchestration layer calling agent functions.
+- [🧭 Project overview](#project-overview)
+- [🏗️ Architecture](#architecture)
+- [🔄 Data flow](#data-flow)
+- [🛠️ Tech stack](#tech-stack)
+- [📁 Repository layout](#repository-layout)
+- [📦 Data schema](#data-schema)
+- [🔌 API reference](#api-reference)
+- [🔐 Environment variables](#environment-variables)
+- [🌱 Seeding demo data](#seeding-demo-data)
+- [▶️ Running a demo scenario](#running-a-demo-scenario)
+- [✅ Testing](#testing)
+- [🚀 Deployment](#deployment)
+- [🗺️ Roadmap](#roadmap)
+- [🤝 Contributing](#contributing)
+- [📄 License](#license)
 
-1) Situational Agent (Intake + Fusion)
-- Inputs: satellite polygons, social posts, citizen reports (SMS/WhatsApp/web form), IoT sensor streams
-- Responsibilities: normalize all inbound messages into a canonical incident schema, extract geolocation, timestamp, media links, and source metadata
-- Output: proto-incident objects persisted into Qdrant with vector embedding + metadata (source_provenance)
+---
 
-2) Verification Agent
-- Inputs: proto-incidents from Situational Agent
-- Responsibilities: deduplicate by spatial/temporal clustering (e.g., 150 m / 30 min window), filter noise (age thresholds), image classification checks, cross-source corroboration
-- Output: verified incident clusters with cluster_id, confidence score, and canonical representative record
+## 🧭 Project overview
 
-3) Victim Agent (Needs & Severity)
-- Inputs: verified clusters
-- Responsibilities: extract needs (medical, shelter, evacuation, rescue), compute severity score (multi-factor: keyword multipliers, population density overlay, multi-source bonuses, satellite area proxies, temporal escalation rules)
-- Output: priority label (P1..P4), needs profile JSON for each cluster
+During a disaster, the hardest problem isn't a lack of information — it's too much of it, arriving unverified, unstructured, and from too many channels at once. Satellite imagery flags a flooded region hours after it started. Citizens send panicked, inconsistent SMS reports. Social media surfaces real signal buried in noise. Responders operate with partial visibility into where they're needed most.
 
-4) Resource Agent
-- Inputs: registered responder resources (registry DB / real-time locations)
-- Responsibilities: maintain responder capability tags, inventory, status, location, availability windows
-- Output: live resource pool used by Orchestrator
+DisasterMesh is built to solve that fusion problem end-to-end:
 
-5) Orchestrator Agent
-- Inputs: prioritized incidents, resource pool, road/traffic ETAs
-- Responsibilities: compute assignment matrix (minimize ETA with capability constraints), produce dispatch orders, handle dynamic re-routing (traffic/timeouts). Uses OR-Tools for constraint solving.
-- Output: assignment records, ETA, route details
+- **Ingest** everything (satellite polygons, social posts, citizen reports, IoT sensor streams) into one canonical schema
+- **Deduplicate and verify** so five reports of the same fire become one confirmed incident, not five
+- **Score severity** using a multi-factor model, so P1 incidents surface before P4s
+- **Match and dispatch** responders using constraint-based optimization, not just "nearest available"
+- **Close the loop** with real-time status updates to both citizens and responders
 
-6) Communication Agent
-- Inputs: lifecycle state changes and assignment results
-- Responsibilities: send citizen/responder notifications (SMS/WhatsApp), produce situational summaries, manage lifecycle state machine (REPORTED → VERIFIED → ASSIGNED → EN ROUTE → ON SCENE → RESOLVED)
-- Output: notification logs, callback webhooks, status updates
+The system is designed to be demoable end-to-end on a laptop using mock data, while being architected in a way that scales to real feeds (Sentinel-2, IMD alerts, Twilio/WhatsApp) with minimal rework.
 
-## Data flow (high level)
-SATELLITE + SOCIAL + CITIZEN + IoT
-  → Situational Agent (normalize + embed)
-  → Verification Agent (cluster + dedupe + verify)
-  → Victim Agent (needs extraction + severity)
-  → Resource Agent (live resource state)
-  → Orchestrator Agent (optimize + assign)
-  → Communication Agent (notify + lifecycle)
+---
 
-## Tech stack
-- Backend: Python 3.11+, FastAPI (async)
-- Orchestration: lightweight function calls or CrewAI / LangGraph (optional)
-- Vector DB: Qdrant (self-host or cloud)
-- LLM: any bilingual model (Gemini/LLM of choice) for extraction/translation tasks
-- Satellite data: pre-downloaded Sentinel-2 GeoJSONs + NASA FIRMS REST for thermal alerts
-- Geocoding: OpenStreetMap / Nominatim + local landmark lookup table for Hindi transliterations
-- Maps / frontend: React + Mapbox GL JS
-- Optimization: Google OR-Tools (Python)
-- Realtime: Socket.io (websocket gateway) or server-sent events
-- Messaging: Twilio SMS (demo), WhatsApp Business API (optional)
-- Image hosting: Cloudinary (or S3)
+## 🏗️ Architecture
 
-## Data & demo assets
-Prepare and pre-load the following demo assets before running a live demo:
-- Mock citizen reports: 20–30 SMS-style JSON messages (Hindi/English)
-- Satellite polygons: 3–5 pre-computed Sentinel-2 flood GeoJSON polygons
-- Mock social posts: 15–20 tweets/news items with timestamps and geo hints
-- Responder registry: 5–8 teams with capabilities and home bases
-- Population density overlay: small JSON grid or geojson with tagged POIs (school, hospital, metro)
-- IMD/authority alerts: mock JSON file(s)
+DisasterMesh is a six-agent pipeline. Each agent is a modular, independently callable backend component. All agents read/write through a shared vector memory layer (Qdrant) and are orchestrated by a FastAPI backend.
 
-Suggested file layout inside repo (examples):
-- /backend/ (FastAPI app)
-- /backend/app/main.py
-- /backend/app/agents/ (agent modules for situational, verification, victim, resource, orchestrator, comms)
-- /backend/scripts/seed_data.py
-- /demo_data/ (mock SMS, tweets, geojson polygons)
-- /infra/docker-compose.yml (qdrant, redis)
-- /frontend/ (React + Mapbox)
+### 1️⃣ Situational Agent — Intake & Fusion
+- **Inputs:** satellite polygons, social posts, citizen reports (SMS/WhatsApp/web form), IoT sensor streams
+- **Responsibilities:** normalize every inbound message into a canonical incident schema; extract geolocation, timestamp, media links, and source metadata
+- **Output:** proto-incident objects persisted into Qdrant with an embedding vector + metadata (`source_provenance`)
 
-## Qdrant schema & vector design (recommended)
-Collection: incidents
-- vector: float[dim] (embedding vector from extractor)
-- payload (metadata):
-  - cluster_id: string
-  - source_provenance: array[string] (e.g. ["sms", "sentinel", "tweet"])
-  - lat: float
-  - lon: float
-  - timestamp: ISO8601
-  - confidence: float (0..1)
-  - severity: integer or string (P1..P4)
-  - needs: JSON (medical, shelter, water, evacuation)
-  - media_urls: array[string]
+### 2️⃣ Verification Agent — Dedup & Confidence
+- **Inputs:** proto-incidents from the Situational Agent
+- **Responsibilities:** deduplicate via spatial/temporal clustering (150 m / 30 min window as a default) combined with vector similarity for cases where geo-coordinates are noisy or missing; filter stale/noisy reports; run basic image classification checks on attached media; cross-source corroboration (does a satellite polygon back up the citizen reports in the same area?)
+- **Output:** verified incident clusters with `cluster_id`, a confidence score (0–1), and a canonical representative record
 
-Geospatial queries: Prefer Qdrant's geo filtering where possible. If Qdrant geo features are limited in your chosen version, fallback to storing lat/lon in metadata and using a server-side Haversine filter for small datasets.
+### 3️⃣ Victim Agent — Needs & Severity
+- **Inputs:** verified incident clusters
+- **Responsibilities:** extract needs (medical, shelter, evacuation, rescue) from report text/media; compute a severity score using a multi-factor model — keyword multipliers, population density overlay, multi-source corroboration bonus, satellite-derived area proxy, and temporal escalation (an incident that keeps generating new reports over time gets bumped up)
+- **Output:** priority label (`P1`–`P4`) and a structured needs profile JSON per cluster
 
-Indexing & retrieval patterns:
-- Nearest incidents by vector similarity for semantic search
-- Geo-filtered nearest incidents by radius (150m default for dedupe clustering)
-- Time window filtering (e.g., last 6 hours)
+### 4️⃣ Resource Agent — Responder State
+- **Inputs:** registered responder resources (registry DB or real-time location feed)
+- **Responsibilities:** maintain responder capability tags (medical, rescue, water, logistics), inventory, live status, location, and availability windows
+- **Output:** a live, queryable resource pool consumed by the Orchestrator
 
-## Backend API surface (suggested endpoints)
-These are suggested endpoints for the FastAPI backend. Implementations may vary.
-- POST /ingest/report  → accepts citizen report JSON (sms/text/form)
-- POST /ingest/social  → accepts social post JSON
-- POST /ingest/satellite → accepts GeoJSON polygon or polygon id
-- POST /agents/run/{agent_name} → run a specific agent job (debug)
-- GET /incidents/{cluster_id} → incident cluster details
-- GET /incidents?lat=&lon=&radius= → geo query
-- POST /dispatch/{cluster_id} → force dispatch (debug endpoint)
-- Websocket /ws/updates → socket.io or websocket endpoint for real-time updates
+### 5️⃣ Orchestrator Agent — Optimization & Dispatch
+- **Inputs:** prioritized incidents, live resource pool, road/traffic ETA estimates
+- **Responsibilities:** compute an assignment matrix that minimizes total ETA subject to capability and capacity constraints, using **Google OR-Tools**; handle dynamic re-routing when traffic conditions change or a responder times out
+- **Output:** assignment records, ETA per assignment, route details
 
-Payloads should use a canonical schema (see /docs or /backend/app/schemas.py)
+### 6️⃣ Communication Agent — Notify & Track
+- **Inputs:** lifecycle state changes and assignment results
+- **Responsibilities:** send citizen and responder notifications (SMS/WhatsApp); generate situational summaries; drive the incident lifecycle state machine
+- **Output:** notification logs, callback webhooks, status updates
 
-## Environment variables (example)
-- QDRANT_URL=http://localhost:6333
-- QDRANT_API_KEY=
-- DATABASE_URL=sqlite:///./dev.db (or postgres://...)
-- MAPBOX_TOKEN=<token>
-- TWILIO_ACCOUNT_SID=<sid>
-- TWILIO_AUTH_TOKEN=<token>
-- TWILIO_FROM_NUMBER=<+1...>
-- SENTINEL_DATA_DIR=./demo_data/sentinel
-- S3_BUCKET= (if using S3 for images)
-- ORTOOLS_SCALAR_WEIGHTS= (optional tuning string for optimizer)
+**Lifecycle state machine:**
 
-## Local development (quickstart)
-Prerequisites:
-- Python 3.11+
-- Node 18+ (for frontend)
-- Docker (recommended for Qdrant)
-- Poetry / pip for dependency management
+```
+REPORTED → VERIFIED → ASSIGNED → EN ROUTE → ON SCENE → RESOLVED
+```
 
-Steps:
-1. Clone the repo
-   git clone https://github.com/vib3withsimran/DisasterMesh.git
-2. Start Qdrant (docker-compose in /infra/docker-compose.yml):
-   cd infra && docker compose up -d
-   (or use Qdrant Cloud and set QDRANT_URL)
-3. Create a virtualenv and install backend deps:
-   cd backend
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-4. Seed demo data (adjust path if needed):
-   python backend/scripts/seed_data.py --dir ../demo_data
-   This script populates Qdrant with mock incident vectors and demo responder registry.
-5. Run the backend:
-   uvicorn backend.app.main:app --reload --port 8000
-6. Run the frontend (optional):
-   cd frontend && npm install && npm run dev
-7. Open the dashboard (default): http://localhost:3000 or http://localhost:8000/docs for OpenAPI
+---
 
-## Seeding & demo scripts
-- /backend/scripts/seed_data.py should:
-  - create the Qdrant collection with the recommended schema
-  - load demo GeoJSON polygons into the incidents collection
-  - load mock SMS/tweet JSON into an ingestion queue or directly into Qdrant
-  - create responder registry entries in the local DB
+## 🔄 Data flow
 
-## Operational notes & performance caveats
-- For demos, pre-compute satellite flood polygons and treat them as "real-time" alerts; do not rely on on-the-fly sentinel downloads.
-- Keep the geocoding fallback lookup table of known landmarks to avoid Hindi transliteration failures.
-- Start with simple OR-Tools objective (minimize travel time/distance) before adding multi-objective constraints.
+```
+ SATELLITE   SOCIAL   CITIZEN   IoT
+     │          │        │       │
+     └────────┬─┴────────┴───────┘
+              ▼
+      Situational Agent
+     (normalize + embed)
+              ▼
+      Verification Agent
+     (cluster + dedupe + verify)
+              ▼
+       Victim Agent
+   (needs extraction + severity)
+              ▼
+      ┌───────┴────────┐
+      ▼                ▼
+Resource Agent   Orchestrator Agent
+(live state)    (optimize + assign)
+      └───────┬────────┘
+              ▼
+      Communication Agent
+      (notify + lifecycle)
+```
 
-## Testing & validation
-- Unit tests: backend/app/tests/unit
-- Integration tests: backend/app/tests/integration (include a small seeded Qdrant run)
-- Run tests via pytest in the backend virtualenv: pytest -q
+---
 
-## Deployment
-- Frontend: Vercel (recommended)
-- Backend: Render / Fly / Render Web Service
-- Qdrant: Qdrant Cloud or self-hosted via Docker
-- Use environment variables to separate demo mode from production mode
+## 🛠️ Tech stack
 
-## Contributing
-Contributions are welcome. Please open issues for bugs or feature requests. Follow the standard GitHub workflow:
-- Fork the repo
-- Create a feature branch
-- Add tests for new features
-- Submit a PR with descriptions and screenshots where applicable
+| Layer | Choice |
+|---|---|
+| Backend | Python 3.11+, FastAPI (async) |
+| Agent orchestration | Function-call pipeline, optionally CrewAI or LangGraph |
+| Vector memory | Qdrant (self-hosted or cloud) |
+| LLM | Any bilingual model (Claude, Gemini, etc.) for extraction/translation |
+| Satellite data | Pre-downloaded Sentinel-2 GeoJSONs + NASA FIRMS REST for thermal alerts |
+| Geocoding | OpenStreetMap / Nominatim + local landmark lookup table for Hindi transliterations |
+| Optimization | Google OR-Tools (Python) |
+| Realtime | Server-sent events, or Socket.io as an alternative |
+| Messaging | Twilio SMS (demo), WhatsApp Business API (optional) |
+| Image hosting | Cloudinary or S3 |
+| Frontend | React + Mapbox GL JS |
 
-## License
-Specify a license file in the repo (e.g., MIT). Add LICENSE at repo root.
+---
 
-## Acknowledgements
-This project is an engineering reference for multi-source disaster detection and coordination; please keep demo data and production data ethically sourced and privacy-aware.
+## 📁 Repository layout
+
+```
+disastermesh/
+├── backend/
+│   ├── app/
+│   │   ├── main.py                # FastAPI entrypoint
+│   │   ├── agents/
+│   │   │   ├── situational.py
+│   │   │   ├── verification.py
+│   │   │   ├── victim.py
+│   │   │   ├── resource.py
+│   │   │   ├── orchestrator.py
+│   │   │   └── communication.py
+│   │   ├── schemas.py             # Pydantic models — canonical incident schema
+│   │   └── tests/
+│   │       ├── unit/
+│   │       └── integration/
+│   ├── scripts/
+│   │   └── seed_data.py
+│   └── requirements.txt
+├── demo_data/
+│   ├── citizen_reports/           # 20–30 mock SMS-style JSON messages (Hindi/English)
+│   ├── social_posts/              # 15–20 mock tweets/news items
+│   ├── satellite/                 # 3–5 Sentinel-2 flood GeoJSON polygons
+│   ├── responder_registry.json    # 5–8 responder teams with capabilities
+│   ├── population_density.geojson # Tagged POIs (school, hospital, metro)
+│   └── authority_alerts.json      # Mock IMD/authority alerts
+├── infra/
+│   └── docker-compose.yml         # Qdrant + Redis
+└── frontend/                      # React + Mapbox dashboard
+```
+
+---
+
+## 📦 Data schema
+
+### Canonical incident record (Qdrant `incidents` collection)
+
+```json
+{
+  "vector": "[float, float, ...]",
+  "payload": {
+    "cluster_id": "string",
+    "source_provenance": ["sms", "sentinel", "tweet"],
+    "lat": 28.6139,
+    "lon": 77.2090,
+    "timestamp": "2026-08-07T09:15:00Z",
+    "confidence": 0.87,
+    "severity": "P1",
+    "needs": {
+      "medical": true,
+      "shelter": false,
+      "evacuation": true,
+      "rescue": true
+    },
+    "media_urls": ["https://..."]
+  }
+}
+```
+
+**Indexing & retrieval patterns:**
+- Nearest incidents by vector similarity (semantic search across differently-worded reports of the same event)
+- Geo-filtered nearest incidents by radius (150 m default for dedupe clustering)
+- Time-window filtering (e.g., last 6 hours)
+
+> **Note on geo queries:** Prefer Qdrant's native geo filtering where available. If your Qdrant version has limited geo support, fall back to storing `lat`/`lon` in the payload and running a server-side Haversine filter — this is fine for demo-scale datasets (hundreds to low thousands of incidents).
+
+---
+
+## 🔌 API reference
+
+Suggested FastAPI endpoints. Adjust naming to match your actual implementation in `backend/app/main.py`.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/ingest/report` | Accepts a citizen report JSON (SMS/text/form) |
+| `POST` | `/ingest/social` | Accepts a social post JSON |
+| `POST` | `/ingest/satellite` | Accepts a GeoJSON polygon or polygon ID |
+| `POST` | `/agents/run/{agent_name}` | Manually trigger a specific agent job (debug) |
+| `GET` | `/incidents/{cluster_id}` | Fetch incident cluster details |
+| `GET` | `/incidents?lat=&lon=&radius=` | Geo query for nearby incidents |
+| `POST` | `/dispatch/{cluster_id}` | Force a dispatch (debug endpoint) |
+| `WS` | `/ws/updates` | Real-time incident and dispatch updates |
+
+**Example: submitting a citizen report**
+
+```bash
+curl -X POST http://localhost:8000/ingest/report \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source": "sms",
+    "text": "Water rising fast near Yamuna Bazar, need boats",
+    "lat": 28.6667,
+    "lon": 77.2333,
+    "timestamp": "2026-08-07T09:10:00Z",
+    "media_urls": []
+  }'
+```
+
+Full request/response schemas live in `backend/app/schemas.py`.
+
+---
+
+## 🔐 Environment variables
+
+Create a `.env` file in `backend/` with:
+
+```env
+QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=
+
+DATABASE_URL=sqlite:///./dev.db
+
+MAPBOX_TOKEN=
+
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_FROM_NUMBER=
+
+SENTINEL_DATA_DIR=./demo_data/satellite
+S3_BUCKET=
+
+ORTOOLS_SCALAR_WEIGHTS=
+```
+
+For a demo, `DATABASE_URL` can stay on SQLite. Switch to Postgres for anything beyond local testing — you'll want relational queries over incident/responder history that Qdrant alone won't give you cleanly.
+
+---
+
+## 🌱 Seeding demo data
+
+`backend/scripts/seed_data.py` should:
+1. Create the Qdrant `incidents` collection with the schema above
+2. Load demo GeoJSON polygons into it
+3. Push mock SMS/tweet JSON through the ingestion pipeline (or directly into Qdrant, if you want to skip agent processing for a quick smoke test)
+4. Create responder registry entries in the local DB
+
+Recommended demo dataset sizes (small enough to reason about, large enough to show dedup working):
+- 20–30 mock citizen reports (mix of Hindi/English)
+- 3–5 satellite flood polygons
+- 15–20 mock social posts
+- 5–8 responder teams with distinct capability tags
+
+---
+
+## ▶️ Running a demo scenario
+
+A good end-to-end demo flow:
+
+1. Seed the data (above)
+2. POST 4–5 citizen reports describing the *same* flooding event with slightly different wording/locations — this is what shows off the Verification Agent's dedup
+3. Watch `/ws/updates` or the frontend map as the cluster forms, gets a confidence score, and is assigned a severity label
+4. Call `/dispatch/{cluster_id}` (or let the Orchestrator auto-assign) and confirm a responder gets matched with a computed ETA
+5. Confirm a notification log appears in the Communication Agent's output and the lifecycle state advances
+
+---
+
+## ✅ Testing
+
+```bash
+cd backend
+pytest -q
+```
+
+- **Unit tests:** `backend/app/tests/unit` — test each agent's logic in isolation with mocked inputs
+- **Integration tests:** `backend/app/tests/integration` — run against a small seeded Qdrant instance to validate the full pipeline
+
+---
+
+## 🚀 Deployment
+
+| Component | Recommended target |
+|---|---|
+| Frontend | Vercel |
+| Backend | Render / Fly.io |
+| Qdrant | Qdrant Cloud or self-hosted Docker |
+
+Use environment variables to cleanly separate demo mode (mock data, no real SMS sending) from production mode (real Twilio/WhatsApp, real satellite feeds).
+
+---
+
+## 💡 Operational notes
+
+- For live demos, pre-compute satellite flood polygons ahead of time and present them as "real-time" — don't rely on on-the-fly Sentinel downloads during a presentation.
+- Maintain a geocoding fallback lookup table of known landmarks to avoid Hindi transliteration failures with Nominatim.
+- Start the Orchestrator with a simple OR-Tools objective (minimize total travel time/distance) before layering in multi-objective constraints like capability matching or capacity limits — it's much easier to debug incrementally.
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Real-time Sentinel-2 ingestion (beyond pre-downloaded polygons)
+- [ ] Multi-objective OR-Tools model (ETA + capability + capacity + fairness)
+- [ ] WhatsApp Business API integration for two-way citizen communication
+- [ ] Admin dashboard for manual override of agent decisions
+- [ ] Multi-language support beyond Hindi/English
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome:
+1. Fork the repo
+2. Create a feature branch
+3. Add tests for new functionality
+4. Submit a PR with a clear description and, where relevant, screenshots
+
+---
+
+## 📄 License
+
+MIT — see `LICENSE` at the repo root.
+
+## 🙏 Acknowledgements
+
+DisasterMesh is an engineering reference for multi-source disaster detection and coordination. Keep demo data and any production data ethically sourced and privacy-aware — especially where citizen reports include location and personal details.

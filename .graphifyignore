@@ -1,0 +1,84 @@
+# ─────────────────────────────────────────
+# DisasterMesh .graphifyignore
+#
+# Follows gitignore syntax (last-match-wins).
+# Layered on top of .gitignore — only list
+# things specific to graphify's needs here.
+# ─────────────────────────────────────────
+
+# ── Graphify own output (never index itself) ─
+graphify-out/
+
+# ── Python build / runtime noise ─────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ── Node / frontend build artifacts ──────────
+node_modules/
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.next/
+frontend/out/
+.parcel-cache/
+
+# ── Test fixtures & coverage data ────────────
+# (test source files ARE useful — only exclude generated reports)
+htmlcov/
+coverage/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Docker / infra runtime state ─────────────
+qdrant_storage/
+qdrant_data/
+.qdrant/
+
+# ── Large binary / raster satellite data ─────
+# Index the GeoJSON metadata but skip raw rasters
+demo_data/sentinel/*.tif
+demo_data/sentinel/*.nc
+demo_data/sentinel/*.h5
+demo_data/sentinel/*.hdf5
+demo_data/sentinel/*.grib
+
+# ── Media & uploads (too large for graph) ────
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+
+# ── SQLite dev database ───────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Lock files (large, low signal) ───────────
+package-lock.json
+yarn.lock
+poetry.lock
+uv.lock
+Pipfile.lock
+
+# ── Editor & OS noise ────────────────────────
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

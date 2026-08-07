@@ -1,0 +1,167 @@
+# ─────────────────────────────────────────
+# DisasterMesh .gitignore
+# Stack: Python/FastAPI · React/Node · Docker · Qdrant · OR-Tools
+# Updated to match README repo layout
+# ─────────────────────────────────────────
+
+# ── Environment & Secrets ─────────────────
+.env
+.env.*
+!.env.example
+backend/.env           # per README: env file lives in backend/
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# ── Python ────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+wheels/
+sdist/
+.eggs/
+lib/
+lib64/
+parts/
+var/
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.log
+.hypothesis/
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+backend/.venv/         # per README quickstart: virtualenv created inside backend/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Node / React Frontend ─────────────────
+frontend/node_modules/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+.yarn/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/.cache/
+.parcel-cache/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Docker ────────────────────────────────
+infra/.env
+docker-compose.override.yml
+
+# Qdrant local data volume (if mounted locally)
+qdrant_storage/
+qdrant_data/
+.qdrant/
+
+# ── Demo / Seed Data (large files) ────────
+# Raw satellite/raster files (GeoJSON files ARE tracked; only binary rasters excluded)
+# per README: satellite data now lives in demo_data/satellite/
+demo_data/satellite/*.tif
+demo_data/satellite/*.nc
+demo_data/satellite/*.h5
+demo_data/satellite/*.hdf5
+demo_data/satellite/*.grib
+
+# SQLite dev database
+*.db
+*.sqlite
+*.sqlite3
+dev.db
+
+# ── Logs & Runtime Artifacts ──────────────
+logs/
+*.log
+*.log.*
+celerybeat-schedule
+celerybeat.pid
+*.pid
+
+# ── Test / Coverage Reports ───────────────
+htmlcov/
+.coverage
+coverage/
+test-results/
+junit.xml
+report.xml
+
+# ── OS & Editor ───────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# VS Code (keep workspace settings, ignore personal configs)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+*.code-workspace
+
+# JetBrains / PyCharm
+.idea/
+*.iml
+*.iws
+out/
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+
+# ── Lock files ───────────────────────────
+# Uncomment to track lock files (recommended for reproducible deploys):
+# !poetry.lock
+# !uv.lock
+uv.lock
+poetry.lock
+
+# ── Misc ──────────────────────────────────
+*.bak
+*.tmp
+*.orig
+*.patch
+tmp/
+temp/
+.cache/
