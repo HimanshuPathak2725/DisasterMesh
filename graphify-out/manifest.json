@@ -298,5 +298,20 @@
     "mtime": 1786172937.3239133,
     "ast_hash": "8fa301cb11db27ff26e987228cd70af2",
     "semantic_hash": ""
+  },
+  "backend/app/tests/integration/test_full_pipeline.py": {
+    "mtime": 1786174361.4282875,
+    "ast_hash": "06feea5d30a7cb285b59006deffc421a",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/integration/test_performance.py": {
+    "mtime": 1786174437.7186456,
+    "ast_hash": "0d7007bf2c100e8d055ef3287dc01e5a",
+    "semantic_hash": ""
+  },
+  "backend/scripts/run_demo_scenario.py": {
+    "mtime": 1786174211.3373697,
+    "ast_hash": "50f2c675018da8cc78b21546cb913189",
+    "semantic_hash": ""
   }
 }

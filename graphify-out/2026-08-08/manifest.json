@@ -30,8 +30,8 @@
     "semantic_hash": ""
   },
   "backend/app/agents/communication.py": {
-    "mtime": 1786115070.7991486,
-    "ast_hash": "b84d50e667eedff1fc2561e52996f0c7",
+    "mtime": 1786172748.7283797,
+    "ast_hash": "4bc6b8c749ed176a22387c3c1ec1c5b0",
     "semantic_hash": ""
   },
   "backend/app/agents/orchestrator.py": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "backend/app/main.py": {
-    "mtime": 1786169203.4291208,
-    "ast_hash": "defdc87b17238d3caccabd279e47d045",
+    "mtime": 1786172816.5035448,
+    "ast_hash": "65aad23e9eeb6da05d43472da1ba765e",
     "semantic_hash": ""
   },
   "backend/app/routers/__init__.py": {
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "backend/app/schemas.py": {
-    "mtime": 1786168791.1627305,
-    "ast_hash": "433a71c51f736e00d27242b816a0928a",
+    "mtime": 1786172685.2450595,
+    "ast_hash": "b05e85941d388b5a338b5585daa274c0",
     "semantic_hash": ""
   },
   "backend/app/tests/__init__.py": {
@@ -165,8 +165,8 @@
     "semantic_hash": ""
   },
   "backend/app/models.py": {
-    "mtime": 1786168765.9879446,
-    "ast_hash": "98b4811871a2ec22382cb016fb9b9c54",
+    "mtime": 1786172667.6274216,
+    "ast_hash": "c82652064e5031f6aebd85156521db3a",
     "semantic_hash": ""
   },
   "backend/app/tests/unit/conftest.py": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "backend/app/agents/vector_store.py": {
-    "mtime": 1786172265.170121,
-    "ast_hash": "ffd499f84b7bcba714a6ffd149b177e3",
+    "mtime": 1786172858.807824,
+    "ast_hash": "ac87d5aa909d36aa197e359a1cf11cf4",
     "semantic_hash": ""
   },
   "backend/app/tests/integration/test_vector_store.py": {
@@ -277,6 +277,26 @@
   "backend/app/tests/conftest.py": {
     "mtime": 1786169630.835107,
     "ast_hash": "22776f130aa3b97f6be76f1e3852b338",
+    "semantic_hash": ""
+  },
+  "backend/app/routers/communication.py": {
+    "mtime": 1786173084.5229838,
+    "ast_hash": "a4209aebee9923d1601b110915e7a989",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/integration/test_communication_integration.py": {
+    "mtime": 1786173133.6198497,
+    "ast_hash": "53a09402a6ff0f66d08cb6ee432f951e",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/unit/test_communication_unit.py": {
+    "mtime": 1786173014.7868717,
+    "ast_hash": "e37ad8d9d9208e2221383f2e90ec09bd",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/unit/test_websocket_unit.py": {
+    "mtime": 1786172937.3239133,
+    "ast_hash": "8fa301cb11db27ff26e987228cd70af2",
     "semantic_hash": ""
   }
 }
