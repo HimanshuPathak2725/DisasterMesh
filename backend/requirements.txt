@@ -18,6 +18,7 @@ qdrant-client
 langchain-core
 langchain-huggingface
 langchain-qdrant
+langchain-groq
 sentence-transformers         # backend model used by langchain-huggingface
 
 # ── Optimization ──────────────────────────────────────────────────────────────

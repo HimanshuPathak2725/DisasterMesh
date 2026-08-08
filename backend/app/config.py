@@ -40,6 +40,11 @@ class Settings(BaseSettings):
     twilio_auth_token: str = ""
     twilio_from_number: str = ""
 
+    # ── Groq LLM ──────────────────────────────────────────────────────────────
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+    groq_timeout_s: int = 10
+
     # ── Data paths ────────────────────────────────────────────────────────────
     sentinel_data_dir: str = "./demo_data/satellite"
 

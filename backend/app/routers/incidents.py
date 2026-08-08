@@ -4,7 +4,15 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.agents.vector_store import get_vector_store
 from app.agents.verification import get_verification_agent
-from app.schemas import ProtoIncident, SourceType, VerifiedIncident
+from app.agents.victim import get_victim_agent
+from app.schemas import (
+    AssessRequest,
+    Priority,
+    ProtoIncident,
+    SeverityAssessment,
+    SourceType,
+    VerifiedIncident,
+)
 
 router = APIRouter()
 
@@ -112,3 +120,50 @@ async def query_incidents(
         "count": len(incidents),
         "incidents": incidents,
     }
+
+
+@router.post(
+    "/{cluster_id}/assess",
+    response_model=SeverityAssessment,
+    summary="Assess severity & needs for a verified incident cluster",
+)
+async def assess_incident(cluster_id: str, body: AssessRequest) -> SeverityAssessment:
+    """
+    Run the VictimAgent needs-extraction and multi-factor severity scoring
+    pipeline on a verified incident cluster.
+
+    The request body mirrors a ``VerifiedIncident`` and adds an optional
+    ``text`` field containing the original report text used for bilingual
+    keyword extraction.
+
+    Returns a ``SeverityAssessment`` with:
+    - ``needs``          — structured boolean profile (medical, shelter, …)
+    - ``severity_score`` — 0.0–1.0 computed by the multi-factor model
+    - ``priority``       — P1 (critical) … P4 (low)
+    - ``factors``        — per-factor breakdown for transparency
+    """
+    if body.cluster_id != cluster_id:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"cluster_id in URL ('{cluster_id}') does not match "
+                f"cluster_id in body ('{body.cluster_id}')."
+            ),
+        )
+
+    # Reconstruct a VerifiedIncident from the request body
+    incident = VerifiedIncident(
+        cluster_id=body.cluster_id,
+        source_provenance=body.source_provenance,
+        lat=body.lat,
+        lon=body.lon,
+        timestamp=body.timestamp,
+        confidence=body.confidence,
+        severity=body.severity,
+        needs=body.needs,
+        media_urls=body.media_urls,
+        status=body.status,
+    )
+
+    agent = get_victim_agent()
+    return await agent.assess(incident, text=body.text)

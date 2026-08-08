@@ -109,11 +109,51 @@ class NeedsProfile(BaseModel):
     food: bool = False
 
 
+class ParsedIntake(BaseModel):
+    """
+    Structured extraction produced by the LLM Smart Intake Layer (IntakeParserAgent).
+
+    Extracted from raw unstructured free-text in any language (English, Hindi, Hinglish, etc.).
+    """
+
+    address: str | None = Field(default=None, description="Extracted location address or landmark, e.g. 'Yamuna Bazar, Delhi'")
+    lat: float | None = Field(default=None, description="Explicit latitude if provided in raw text")
+    lon: float | None = Field(default=None, description="Explicit longitude if provided in raw text")
+    language: str = Field(default="en", description="Detected language code, e.g. 'hi', 'en', 'hinglish'")
+    incident_type: str = Field(default="other", description="Type of incident, e.g. 'flood', 'fire', 'building_collapse', 'medical_emergency'")
+    needs: NeedsProfile = Field(default_factory=NeedsProfile, description="Extracted victim needs profile")
+    urgency_level: int = Field(default=1, ge=1, le=5, description="Urgency scale 1 (low) to 5 (extreme SOS/life threat)")
+    time_reference: str | None = Field(default=None, description="Extracted time reference string, e.g. 'since 2 hours ago'")
+    cleaned_text: str = Field(default="", description="Normalized English translation / summary of the report text")
+
+
 class SeverityAssessment(BaseModel):
     needs: NeedsProfile
     severity_score: float = Field(ge=0.0, le=1.0)
     priority: Priority
     factors: dict[str, float] = {}  # breakdown of scoring factors
+
+
+class AssessRequest(BaseModel):
+    """
+    Request body for ``POST /incidents/{cluster_id}/assess``.
+
+    Carries the full ``VerifiedIncident`` payload plus the original
+    report text used for bilingual keyword extraction (since
+    ``VerifiedIncident`` does not store the raw text).
+    """
+
+    cluster_id: str
+    source_provenance: list[SourceType] = []
+    lat: float
+    lon: float
+    timestamp: datetime
+    confidence: float = Field(ge=0.0, le=1.0)
+    severity: Priority = Priority.P4
+    needs: NeedsProfile = Field(default_factory=NeedsProfile)
+    media_urls: list[str] = []
+    status: IncidentStatus = IncidentStatus.VERIFIED
+    text: str = ""  # free-form report text for needs extraction
 
 
 # ── Verified incident (shared across agents 3–6) ──────────────────────────────

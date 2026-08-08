@@ -9,6 +9,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.embeddings import get_embedding_service
+from app.agents.intake_parser import get_intake_parser
+from app.agents.intake_queue import get_intake_queue
 from app.agents.situational import SituationalAgent
 from app.agents.vector_store import get_vector_store
 from app.db import get_db
@@ -81,10 +83,63 @@ async def ingest_citizen_report(
     """
     Accept a citizen report (SMS / WhatsApp / web form).
 
-    Passes to the SituationalAgent for normalization then persists to SQLite and Qdrant.
+    If GROQ_API_KEY is configured, passes the free-text to the IntakeParserAgent (LLM layer)
+    which extracts location address, language, incident type, needs, urgency level, etc.
+
+    Rule: Device GPS coordinates (report.lat, report.lon) ALWAYS override LLM-extracted coordinates.
+
+    Falls back gracefully to standard geocoding & keyword processing if LLM is unavailable or fails,
+    and enqueues failed parsing requests to Redis retry queue.
     """
-    proto = await _situational_agent.process_citizen_report(report)
-    language = proto.metadata.get("language", "en")
+    parser = get_intake_parser()
+    queue = get_intake_queue()
+
+    if parser.is_available():
+        try:
+            parsed = await parser.parse(report.text)
+            logger.info("LLM Smart Intake parsed report: addr=%s lang=%s urgency=%d", parsed.address, parsed.language, parsed.urgency_level)
+
+            # Determine coordinates: GPS coords > LLM explicit coords > geocoded address
+            lat, lon = report.lat, report.lon
+            if (lat is None or lon is None) and (parsed.lat is not None and parsed.lon is not None):
+                lat, lon = parsed.lat, parsed.lon
+
+            address = report.address or parsed.address
+            if (lat is None or lon is None) and address:
+                resolved = await _situational_agent._geocode(address)
+                if resolved:
+                    lat, lon = resolved
+
+            ts = report.timestamp or datetime.now(UTC)
+            proto = ProtoIncident(
+                source=report.source,
+                text=parsed.cleaned_text or report.text,
+                lat=lat,
+                lon=lon,
+                address=address,
+                timestamp=ts,
+                media_urls=report.media_urls,
+                metadata={
+                    "language": parsed.language,
+                    "incident_type": parsed.incident_type,
+                    "urgency_level": parsed.urgency_level,
+                    "time_reference": parsed.time_reference,
+                    "extracted_needs": parsed.needs.model_dump(),
+                    "llm_parsed": True,
+                },
+                raw_payload=report.model_dump(),
+            )
+            language = parsed.language
+        except Exception as err:
+            logger.warning("IntakeParserAgent failed (%s); processing via default pipeline and queuing retry", err)
+            proto = await _situational_agent.process_citizen_report(report)
+            language = proto.metadata.get("language", "en")
+            # Enqueue for background retry worker
+            await queue.enqueue(proto.id, report.model_dump())
+    else:
+        proto = await _situational_agent.process_citizen_report(report)
+        language = proto.metadata.get("language", "en")
+
     await _persist(
         db,
         proto.id,
@@ -94,7 +149,7 @@ async def ingest_citizen_report(
         language,
     )
     await _index_in_vector_store(proto)
-    logger.info("Citizen report ingested id=%s", proto.id)
+    logger.info("Citizen report ingested id=%s (llm_parsed=%s)", proto.id, proto.metadata.get("llm_parsed", False))
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
 

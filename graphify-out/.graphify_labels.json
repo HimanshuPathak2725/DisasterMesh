@@ -35,9 +35,6 @@
   "33": "vector_store.py",
   "34": "db.py",
   "35": "main.py",
-  "36": "get_qdrant_client_sync",
-  "37": "test_incidents.py",
-  "38": "QdrantClient",
-  "39": "._resolve_cluster",
-  "40": "get_redis_client"
+  "36": "get_redis_client",
+  "38": "QdrantClient"
 }

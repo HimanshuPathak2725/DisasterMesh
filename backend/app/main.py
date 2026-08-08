@@ -27,6 +27,8 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    import asyncio
+
     logger.info("DisasterMesh API starting — env=%s", settings.app_env)
     await init_db()
     logger.info("Database tables initialised")
@@ -35,7 +37,30 @@ async def lifespan(app: FastAPI):
 
     await init_vector_store(get_qdrant_client_sync())
     logger.info("Qdrant vector store ready")
+
+    # Phase 4.5: Background task to process intake queue retries every 30s
+    from app.agents.intake_queue import get_intake_queue
+    intake_queue = get_intake_queue()
+
+    async def _queue_worker():
+        while True:
+            try:
+                await asyncio.sleep(30)
+                await intake_queue.process_pending()
+            except asyncio.CancelledError:
+                break
+            except Exception as err:
+                logger.warning("Intake queue background worker error: %s", err)
+
+    worker_task = asyncio.create_task(_queue_worker())
+
     yield
+
+    worker_task.cancel()
+    try:
+        await worker_task
+    except asyncio.CancelledError:
+        pass
     logger.info("DisasterMesh API shutting down")
 
 

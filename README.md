@@ -260,6 +260,11 @@ TWILIO_FROM_NUMBER=
 SENTINEL_DATA_DIR=./demo_data/satellite
 S3_BUCKET=
 
+# ── Groq LLM (Smart Intake Layer — Phase 4.5) ─────────────────────────
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_TIMEOUT_S=10
+
 # ── Optimization ──────────────────────────────────────────────────────
 ORTOOLS_SCALAR_WEIGHTS=
 ```
