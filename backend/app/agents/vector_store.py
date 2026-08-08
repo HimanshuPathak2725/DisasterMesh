@@ -35,7 +35,7 @@ from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.models import Distance, VectorParams
 
 from app.agents.embeddings import EmbeddingService, get_embedding_service
-from app.schemas import ProtoIncident
+from app.schemas import ProtoIncident, VerifiedIncident
 
 logger = logging.getLogger(__name__)
 
@@ -212,9 +212,10 @@ class VectorStore:
         time_window_s: float | None = None,
         query_text: str | None = None,
         limit: int = 50,
-    ) -> list[dict[str, Any]]:
+        with_vectors: bool = False,
+    ) -> list[dict[str, Any]] | list[tuple[dict[str, Any], list[float]]]:
         """
-        Find ProtoIncident payloads within geo radius + optional time window.
+        Find ProtoIncident payloads (and optional vectors) within geo radius + optional time window.
 
         Strategy:
           1. Pull broad candidates via semantic search (if query_text given)
@@ -222,7 +223,8 @@ class VectorStore:
           2. Haversine post-filter to radius_m.
           3. Optionally filter by time_window_s (recency).
 
-        Returns payload dicts sorted by distance ascending.
+        Returns payload dicts (or (payload, vector) tuples if with_vectors=True)
+        sorted by distance ascending.
         Used by Phase 3 VerificationAgent for dedup clustering.
         """
         import asyncio
@@ -233,40 +235,82 @@ class VectorStore:
                 None,
                 lambda: self._store.similarity_search(query_text, k=limit * 10),
             )
-            candidates = [doc.metadata for doc in raw]
+            if with_vectors:
+                proto_ids = [
+                    doc.metadata.get("proto_id")
+                    for doc in raw
+                    if doc.metadata.get("proto_id")
+                ]
+                candidates_with_vec = await self.get_vectors_by_filter(
+                    proto_ids, limit=limit * 10
+                )
+            else:
+                candidates = [doc.metadata for doc in raw]
         else:
             # Scroll via raw Qdrant client
             scroll_result = self._raw_client.scroll(
                 collection_name=COLLECTION_NAME,
                 limit=limit * 10,
                 with_payload=True,
-                with_vectors=False,
+                with_vectors=with_vectors,
             )
-            candidates = [p.payload for p in scroll_result[0] if p.payload]
+            if with_vectors:
+                candidates_with_vec = []
+                for p in scroll_result[0]:
+                    if p.payload and p.vector is not None:
+                        vec = (
+                            p.vector
+                            if isinstance(p.vector, list)
+                            else list(p.vector.values())[0]
+                        )
+                        candidates_with_vec.append((p.payload, vec))
+            else:
+                candidates = [p.payload for p in scroll_result[0] if p.payload]
 
-        # Step 2: Haversine post-filter
-        nearby: list[tuple[float, dict[str, Any]]] = []
-        for payload in candidates:
-            p_lat = payload.get("lat")
-            p_lon = payload.get("lon")
-            if p_lat is None or p_lon is None:
-                continue
-            dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
-            if dist <= radius_m:
-                nearby.append((dist, payload))
+        if with_vectors:
+            nearby_vec: list[tuple[float, dict[str, Any], list[float]]] = []
+            for payload, vec in candidates_with_vec:
+                p_lat = payload.get("lat")
+                p_lon = payload.get("lon")
+                if p_lat is None or p_lon is None:
+                    continue
+                dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
+                if dist <= radius_m:
+                    nearby_vec.append((dist, payload, vec))
 
-        # Step 3: Time-window filter
-        if time_window_s is not None:
-            now_epoch = datetime.now(UTC).timestamp()
-            nearby = [
-                (d, p)
-                for d, p in nearby
-                if p.get("timestamp_epoch") is not None
-                and (now_epoch - p["timestamp_epoch"]) <= time_window_s
-            ]
+            if time_window_s is not None:
+                now_epoch = datetime.now(UTC).timestamp()
+                nearby_vec = [
+                    (d, p, v)
+                    for d, p, v in nearby_vec
+                    if p.get("timestamp_epoch") is not None
+                    and (now_epoch - p["timestamp_epoch"]) <= time_window_s
+                ]
 
-        nearby.sort(key=lambda x: x[0])
-        return [p for _, p in nearby[:limit]]
+            nearby_vec.sort(key=lambda x: x[0])
+            return [(p, v) for _, p, v in nearby_vec[:limit]]
+        else:
+            nearby: list[tuple[float, dict[str, Any]]] = []
+            for payload in candidates:
+                p_lat = payload.get("lat")
+                p_lon = payload.get("lon")
+                if p_lat is None or p_lon is None:
+                    continue
+                dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
+                if dist <= radius_m:
+                    nearby.append((dist, payload))
+
+            if time_window_s is not None:
+                now_epoch = datetime.now(UTC).timestamp()
+                nearby = [
+                    (d, p)
+                    for d, p in nearby
+                    if p.get("timestamp_epoch") is not None
+                    and (now_epoch - p["timestamp_epoch"]) <= time_window_s
+                ]
+
+            nearby.sort(key=lambda x: x[0])
+            return [p for _, p in nearby[:limit]]
 
     async def get_by_proto_id(self, proto_id: str) -> dict[str, Any] | None:
         """Fetch a payload by proto_id."""
@@ -317,6 +361,134 @@ class VectorStore:
         """Return the total number of points in the collection."""
         info = self._raw_client.get_collection(COLLECTION_NAME)
         return info.points_count or 0
+
+    async def get_vectors_by_filter(
+        self,
+        proto_ids: list[str],
+        limit: int = 50,
+    ) -> list[tuple[dict[str, Any], list[float]]]:
+        """
+        Return ``(payload, vector)`` for every point whose ``proto_id`` payload
+        field is in *proto_ids*.
+
+        Used by :class:`~app.agents.verification.VerificationAgent` to retrieve
+        the ground-truth stored embedding vectors for nearby candidates so that
+        cosine similarity can be computed without re-embedding the candidate
+        texts (Option B from the Phase 3 design).
+
+        Parameters
+        ----------
+        proto_ids:
+            List of ``proto_id`` values (UUID strings) to fetch.
+        limit:
+            Maximum number of points returned.
+
+        Returns
+        -------
+        List of ``(payload_dict, vector)`` tuples in arbitrary order.
+        Only points that actually exist in Qdrant are returned — missing
+        IDs are silently skipped.
+        """
+        import asyncio
+
+        from qdrant_client.models import FieldCondition, Filter, MatchAny
+
+        def _do_fetch() -> list[tuple[dict[str, Any], list[float]]]:
+            results: list[tuple[dict[str, Any], list[float]]] = []
+            if not proto_ids:
+                return results
+
+            scroll_filter = Filter(
+                must=[
+                    FieldCondition(
+                        key="proto_id",
+                        match=MatchAny(any=proto_ids),
+                    )
+                ]
+            )
+            try:
+                points, _ = self._raw_client.scroll(
+                    collection_name=COLLECTION_NAME,
+                    scroll_filter=scroll_filter,
+                    limit=limit,
+                    with_payload=True,
+                    with_vectors=True,
+                )
+                for p in points:
+                    if p.payload and p.vector is not None:
+                        vec = (
+                            p.vector
+                            if isinstance(p.vector, list)
+                            else list(p.vector.values())[0]  # named-vector layout
+                        )
+                        results.append((p.payload, vec))
+            except Exception as exc:  # pragma: no cover
+                logger.warning("get_vectors_by_filter failed: %s", exc)
+            return results
+
+        return await asyncio.get_event_loop().run_in_executor(None, _do_fetch)
+
+    async def upsert_verified(
+        self,
+        verified: VerifiedIncident,
+        vector: list[float],
+    ) -> None:
+        """
+        Persist a :class:`~app.schemas.VerifiedIncident` back into the Qdrant
+        collection so that future incoming proto-incidents can discover and join
+        this cluster.
+
+        The point is tagged ``point_type="verified"`` in its payload to
+        distinguish it from raw ``ProtoIncident`` points
+        (``point_type="proto"``).
+
+        Uses the ``cluster_id`` UUID fragment as the point ID so that
+        successive upserts for the same cluster overwrite the previous
+        verified snapshot rather than creating duplicates.
+        """
+        import asyncio
+        import uuid
+
+        from qdrant_client.models import PointStruct
+
+        # Derive a stable integer point ID from the cluster_id string.
+        # cluster_id has the form "cluster_<uuid4>"; strip the prefix.
+        raw_id = verified.cluster_id.removeprefix("cluster_")
+        try:
+            point_id = uuid.UUID(raw_id).int % (2**63)
+        except ValueError:
+            # Fallback: hash the full string if it doesn't parse as UUID.
+            point_id = abs(hash(verified.cluster_id)) % (2**63)
+
+        payload: dict[str, Any] = {
+            "point_type": "verified",
+            "cluster_id": verified.cluster_id,
+            "source_provenance": [
+                s.value if hasattr(s, "value") else str(s)
+                for s in verified.source_provenance
+            ],
+            "lat": verified.lat,
+            "lon": verified.lon,
+            "timestamp_epoch": verified.timestamp.timestamp(),
+            "confidence": verified.confidence,
+            "severity": str(verified.severity),
+            "status": str(verified.status),
+        }
+
+        point = PointStruct(id=point_id, vector=vector, payload=payload)
+
+        await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: self._raw_client.upsert(
+                collection_name=COLLECTION_NAME,
+                points=[point],
+            ),
+        )
+        logger.debug(
+            "Upserted verified cluster_id=%s point_id=%d to Qdrant",
+            verified.cluster_id,
+            point_id,
+        )
 
 
 # ── Module-level singleton ────────────────────────────────────────────────────

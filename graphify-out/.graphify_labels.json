@@ -25,5 +25,19 @@
   "23": "SensorStreamInput",
   "24": "SocialPostInput",
   "25": "AsyncSession",
-  "38": "QdrantClient"
+  "26": "CommunicationAgent",
+  "27": "test_schemas.py",
+  "28": "AsyncSession",
+  "29": "test_verification_integration.py",
+  "30": ".verify",
+  "31": ".upsert",
+  "32": "FastAPI",
+  "33": "vector_store.py",
+  "34": "db.py",
+  "35": "main.py",
+  "36": "get_qdrant_client_sync",
+  "37": "test_incidents.py",
+  "38": "QdrantClient",
+  "39": "._resolve_cluster",
+  "40": "get_redis_client"
 }

@@ -1,8 +1,10 @@
-"""Incidents query router — Phase 2 vector memory integration."""
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, HTTPException, Query
 
 from app.agents.vector_store import get_vector_store
+from app.agents.verification import get_verification_agent
+from app.schemas import ProtoIncident, SourceType, VerifiedIncident
 
 router = APIRouter()
 
@@ -34,6 +36,49 @@ async def search_incidents_semantic(
         "count": len(incidents),
         "incidents": incidents,
     }
+
+
+@router.post("/verify", response_model=VerifiedIncident, summary="Verify a proto incident")
+async def verify_proto_incident(proto: ProtoIncident) -> VerifiedIncident:
+    """
+    Run the VerificationAgent 3D clustering & deduplication pipeline on a ProtoIncident.
+    """
+    agent = get_verification_agent()
+    return await agent.verify(proto)
+
+
+@router.post("/{proto_id}/verify", response_model=VerifiedIncident, summary="Verify an ingested report by ID")
+async def verify_incident_by_id(proto_id: str) -> VerifiedIncident:
+    """
+    Fetch a proto incident by ID from Qdrant vector store and run the
+    VerificationAgent 3D clustering & deduplication pipeline on it.
+    """
+    store = get_vector_store()
+    payload = await store.get_by_proto_id(proto_id)
+    if not payload:
+        raise HTTPException(status_code=404, detail=f"Proto incident {proto_id} not found")
+
+    src_str = payload.get("source", "sms")
+    try:
+        source = SourceType(src_str)
+    except ValueError:
+        source = SourceType.SMS
+
+    ts_epoch = payload.get("timestamp_epoch")
+    ts = datetime.fromtimestamp(ts_epoch, tz=UTC) if ts_epoch else datetime.now(UTC)
+
+    proto = ProtoIncident(
+        id=payload.get("proto_id", proto_id),
+        source=source,
+        text=payload.get("text", ""),
+        lat=payload.get("lat"),
+        lon=payload.get("lon"),
+        address=payload.get("address"),
+        timestamp=ts,
+    )
+
+    agent = get_verification_agent()
+    return await agent.verify(proto)
 
 
 @router.get("/{proto_id}", summary="Get incident by proto ID")

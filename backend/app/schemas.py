@@ -179,3 +179,37 @@ class IngestResponse(BaseModel):
     message_id: str
     lat: float | None = None  # resolved coordinates (None if geocoding failed)
     lon: float | None = None
+
+
+# ── Internal carrier types (not serialized) ───────────────────────────────────
+
+
+from dataclasses import dataclass, field  # noqa: E402
+
+
+@dataclass
+class ClusterMatchResult:
+    """
+    Intermediate result of the 3-D clustering step inside VerificationAgent.
+
+    Not a Pydantic model — this is a pure in-process carrier type that is never
+    serialized to JSON or stored in any database.
+
+    Fields
+    ------
+    cluster_id
+        The cluster to join (may be a pre-existing one or a freshly-generated
+        ``cluster_{uuid4()}``).
+    members
+        Raw Qdrant payload dicts for every proto-incident already in the cluster.
+    member_vectors
+        Stored embedding vectors corresponding to ``members`` (same order).
+    similarity_scores
+        Cosine similarity between the incoming proto's vector and each member
+        vector (same order as ``members``).
+    """
+
+    cluster_id: str
+    members: list[dict] = field(default_factory=list)
+    member_vectors: list[list[float]] = field(default_factory=list)
+    similarity_scores: list[float] = field(default_factory=list)
