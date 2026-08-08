@@ -103,7 +103,12 @@ async def ingest_citizen_report(
     if parser.is_available():
         try:
             parsed = await parser.parse(report.text)
-            logger.info("LLM Smart Intake parsed report: addr=%s lang=%s urgency=%d", parsed.address, parsed.language, parsed.urgency_level)
+            logger.info(
+                "LLM Smart Intake parsed report: addr=%s lang=%s urgency=%d",
+                parsed.address,
+                parsed.language,
+                parsed.urgency_level,
+            )
 
             # Determine coordinates: GPS coords > LLM explicit coords > geocoded address
             lat, lon = report.lat, report.lon
@@ -137,7 +142,10 @@ async def ingest_citizen_report(
             )
             language = parsed.language
         except Exception as err:
-            logger.warning("IntakeParserAgent failed (%s); processing via default pipeline and queuing retry", err)
+            logger.warning(
+                "IntakeParserAgent failed (%s); processing via default pipeline and queuing retry",
+                err,
+            )
             proto = await _situational_agent.process_citizen_report(report)
             language = proto.metadata.get("language", "en")
             # Enqueue for background retry worker
@@ -155,7 +163,11 @@ async def ingest_citizen_report(
         language,
     )
     await _index_in_vector_store(proto)
-    logger.info("Citizen report ingested id=%s (llm_parsed=%s)", proto.id, proto.metadata.get("llm_parsed", False))
+    logger.info(
+        "Citizen report ingested id=%s (llm_parsed=%s)",
+        proto.id,
+        proto.metadata.get("llm_parsed", False),
+    )
     return IngestResponse(message_id=proto.id, lat=proto.lat, lon=proto.lon)
 
 
