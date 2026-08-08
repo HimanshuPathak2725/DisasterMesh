@@ -35,5 +35,6 @@
   "33": "vector_store.py",
   "34": "db.py",
   "35": "main.py",
+  "36": "get_redis_client",
   "38": "QdrantClient"
 }

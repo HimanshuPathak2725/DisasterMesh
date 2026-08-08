@@ -6,7 +6,11 @@ Loaded from environment variables / .env file via pydantic-settings.
 
 from functools import lru_cache
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Explicitly load .env file into os.environ
+load_dotenv()
 
 
 class Settings(BaseSettings):

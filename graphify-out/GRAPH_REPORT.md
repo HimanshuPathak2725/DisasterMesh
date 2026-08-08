@@ -1,16 +1,16 @@
 # Graph Report - DisasterMesh  (2026-08-08)
 
 ## Corpus Check
-- 49 files · ~22,951 words
+- 49 files · ~23,023 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 594 nodes · 1027 edges · 38 communities (30 shown, 8 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 143 edges (avg confidence: 0.73)
+- 596 nodes · 1034 edges · 38 communities (30 shown, 8 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 145 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `55fbb43a`
+- Built from commit: `811c2c12`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -120,7 +120,7 @@ Cohesion: 0.25
 Nodes (3): Unit tests for the ingest endpoints.  Run:     cd backend     pytest app/tests/u, Accepts report with address but no lat/lon., test_ingest_citizen_report_address_only()
 
 ### Community 13 - "CitizenReportInput"
-Cohesion: 0.10
+Cohesion: 0.09
 Nodes (24): get_intake_parser(), IntakeParserAgent, Intake Parser Agent — LLM Smart Intake Layer (Phase 4.5).  Uses LangChain's Chat, Return the shared IntakeParserAgent singleton., Parses free-text crisis reports into structured ParsedIntake using ChatGroq., Return True if GROQ_API_KEY is configured., Parse raw unstructured text using Groq LLM via LangChain.          Returns, ParsedIntake (+16 more)
 
 ### Community 14 - "incidents.py"
@@ -164,16 +164,16 @@ Cohesion: 0.22
 Nodes (7): dispatch_incident(), Dispatch router — trigger responder assignment., Trigger the Orchestrator Agent to assign responders to an incident.      TODO (P, health(), Returns 200 when the API is up. Used by CI and load balancers., HealthResponse, FastAPI
 
 ### Community 31 - ".upsert"
-Cohesion: 0.43
-Nodes (6): get_db(), _get_engine(), _get_session_factory(), AsyncSession, Database and service client factories.  Qdrant:      local file mode by default, FastAPI dependency — yields an async DB session per request.      Usage in a rou
+Cohesion: 0.33
+Nodes (8): get_db(), _get_engine(), _get_session_factory(), init_db(), AsyncSession, Database and service client factories.  Qdrant:      local file mode by default, Create all ORM tables on startup (idempotent).      Called once from the FastAPI, FastAPI dependency — yields an async DB session per request.      Usage in a rou
 
 ### Community 33 - "vector_store.py"
 Cohesion: 0.17
 Nodes (9): _proto_to_document(), Vector Store — Phase 2.  Uses LangChain's QdrantVectorStore wrapper so both the, Store a ProtoIncident and its pre-computed embedding in Qdrant., Semantic similarity search using LangChain interface.          Returns list of (, Persist a :class:`~app.schemas.VerifiedIncident` back into the Qdrant         co, Convert a UUID string to an integer suitable as a Qdrant point ID., Convert a ProtoIncident to a LangChain Document.      page_content  = the text u, _uuid_to_int() (+1 more)
 
 ### Community 34 - "db.py"
-Cohesion: 0.33
-Nodes (6): get_qdrant_client_sync(), init_db(), QdrantClient, Create all ORM tables on startup (idempotent).      Called once from the FastAPI, Return a cached synchronous Qdrant client.      Required by langchain-qdrant's Q, lifespan()
+Cohesion: 0.50
+Nodes (4): get_qdrant_client_sync(), QdrantClient, Return a cached synchronous Qdrant client.      Required by langchain-qdrant's Q, lifespan()
 
 ### Community 36 - "get_redis_client"
 Cohesion: 0.67
@@ -194,9 +194,9 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `ProtoIncident` connect `CommunicationAgent` to `vector_store.py`, `📦 Data schema`, `VerifiedIncident`, `schemas.py`, `VerificationAgent`, `incidents.py`, `SatellitePolygonInput`, `test_schemas.py`, `AsyncSession`, `test_verification_integration.py`?**
   _High betweenness centrality (0.113) - this node is a cross-community bridge._
 - **Why does `VectorStore` connect `CommunicationAgent` to `vector_store.py`, `QdrantClient`, `VerifiedIncident`, `VerificationAgent`, `incidents.py`, `SatellitePolygonInput`, `SocialPostInput`, `test_verification_integration.py`?**
-  _High betweenness centrality (0.095) - this node is a cross-community bridge._
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
 - **Why does `VerifiedIncident` connect `VerifiedIncident` to `vector_store.py`, `CommunicationAgent`, `VerificationAgent`, `SatellitePolygonInput`, `AsyncSession`?**
-  _High betweenness centrality (0.087) - this node is a cross-community bridge._
+  _High betweenness centrality (0.086) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `VictimAgent` (e.g. with `NeedsProfile` and `Priority`) actually correct?**
   _`VictimAgent` has 5 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 9 inferred relationships involving `ProtoIncident` (e.g. with `EmbeddingService` and `SituationalAgent`) actually correct?**

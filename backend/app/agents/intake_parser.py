@@ -12,8 +12,12 @@ import logging
 import os
 from typing import TYPE_CHECKING
 
-from langchain_core.messages import SystemMessage, HumanMessage
+from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_groq import ChatGroq
+
+# Ensure .env is explicitly loaded into os.environ
+load_dotenv()
 
 from app.schemas import ParsedIntake
 
@@ -59,12 +63,30 @@ class IntakeParserAgent:
     """Parses free-text crisis reports into structured ParsedIntake using ChatGroq."""
 
     def __init__(self, api_key: str | None = None, model_name: str | None = None) -> None:
-        self.api_key = api_key or os.getenv("GROQ_API_KEY", "").strip()
-        self.model_name = model_name or os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile").strip()
+        self.explicit_api_key = api_key
+        self.explicit_model_name = model_name
+
+    def _get_api_key(self) -> str:
+        if self.explicit_api_key is not None:
+            return self.explicit_api_key.strip()
+        env_val = os.getenv("GROQ_API_KEY")
+        if env_val is not None:
+            return env_val.strip()
+        from app.config import get_settings
+        return get_settings().groq_api_key.strip()
+
+    def _get_model_name(self) -> str:
+        if self.explicit_model_name is not None:
+            return self.explicit_model_name.strip()
+        env_val = os.getenv("GROQ_MODEL")
+        if env_val is not None:
+            return env_val.strip()
+        from app.config import get_settings
+        return (get_settings().groq_model or "llama-3.3-70b-versatile").strip()
 
     def is_available(self) -> bool:
         """Return True if GROQ_API_KEY is configured."""
-        return bool(self.api_key or os.getenv("GROQ_API_KEY", "").strip())
+        return bool(self._get_api_key())
 
     async def parse(self, raw_text: str) -> ParsedIntake:
         """
@@ -80,13 +102,15 @@ class IntakeParserAgent:
         RuntimeError
             If GROQ_API_KEY is not configured or LLM invocation fails.
         """
-        key = self.api_key or os.getenv("GROQ_API_KEY", "").strip()
+        key = self._get_api_key()
         if not key:
             raise RuntimeError("GROQ_API_KEY is not configured in environment")
 
+        model_name = self._get_model_name()
+
         llm = ChatGroq(
             groq_api_key=key,
-            model_name=self.model_name,
+            model_name=model_name,
             temperature=0.0,
         )
 
@@ -97,7 +121,7 @@ class IntakeParserAgent:
             HumanMessage(content=f"Report text to parse:\n\"\"\"{raw_text}\"\"\""),
         ]
 
-        logger.info("IntakeParserAgent parsing text (len=%d) via Groq model=%s", len(raw_text), self.model_name)
+        logger.info("IntakeParserAgent parsing text (len=%d) via Groq model=%s", len(raw_text), model_name)
         try:
             result = await structured_llm.ainvoke(messages)
             if isinstance(result, ParsedIntake):
