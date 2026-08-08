@@ -33,8 +33,13 @@
   "31": ".upsert",
   "32": "FastAPI",
   "33": "vector_store.py",
-  "34": "db.py",
+  "34": "conftest.py",
   "35": "main.py",
   "36": "get_redis_client",
-  "38": "QdrantClient"
+  "37": "init_vector_store",
+  "38": "get_embedding_service",
+  "39": ".search_nearby",
+  "40": "main.py",
+  "41": "embeddings.py",
+  "42": "get_qdrant_client_sync"
 }

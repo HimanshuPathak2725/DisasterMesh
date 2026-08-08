@@ -281,11 +281,100 @@ def seed_sensor_data() -> None:
     _write(BASE / "iot_sensors" / "sensor_readings.json", records)
 
 
+def seed_responders() -> None:
+    """Generate 8 mock responder teams with diverse capabilities."""
+    teams = [
+        {
+            "id": "resp_001",
+            "name": "NDRF Battalion 8 (Medical/Rescue)",
+            "team_type": "rescue",
+            "capabilities": ["medical", "rescue", "water"],
+            "team_size": 12,
+            "capacity": 3,
+            "lat": 28.6670,
+            "lon": 77.2330,
+        },
+        {
+            "id": "resp_002",
+            "name": "Delhi Fire Services Unit 4",
+            "team_type": "rescue",
+            "capabilities": ["rescue", "water"],
+            "team_size": 8,
+            "capacity": 2,
+            "lat": 28.6560,
+            "lon": 77.2400,
+        },
+        {
+            "id": "resp_003",
+            "name": "CATMA Medical Emergency Squad",
+            "team_type": "medical",
+            "capabilities": ["medical"],
+            "team_size": 6,
+            "capacity": 2,
+            "lat": 28.6310,
+            "lon": 77.2160,
+        },
+        {
+            "id": "resp_004",
+            "name": "Civil Defence Boat Task Force",
+            "team_type": "water",
+            "capabilities": ["rescue", "water", "evacuation"],
+            "team_size": 10,
+            "capacity": 4,
+            "lat": 28.6700,
+            "lon": 77.2250,
+        },
+        {
+            "id": "resp_005",
+            "name": "Red Cross Emergency Logistics",
+            "team_type": "logistics",
+            "capabilities": ["logistics", "evacuation"],
+            "team_size": 15,
+            "capacity": 5,
+            "lat": 28.6080,
+            "lon": 77.2950,
+        },
+        {
+            "id": "resp_006",
+            "name": "Army Medical Corps Unit",
+            "team_type": "medical",
+            "capabilities": ["medical", "rescue"],
+            "team_size": 10,
+            "capacity": 3,
+            "lat": 28.5670,
+            "lon": 77.2430,
+        },
+        {
+            "id": "resp_007",
+            "name": "SDRF Water Rescue Squad",
+            "team_type": "water",
+            "capabilities": ["rescue", "water"],
+            "team_size": 8,
+            "capacity": 2,
+            "lat": 28.6740,
+            "lon": 77.2890,
+        },
+        {
+            "id": "resp_008",
+            "name": "Disaster Evacuation Transport Fleet",
+            "team_type": "evacuation",
+            "capabilities": ["evacuation", "logistics"],
+            "team_size": 20,
+            "capacity": 6,
+            "lat": 28.5350,
+            "lon": 77.2740,
+        },
+    ]
+    _write(BASE / "responder_registry.json", teams)
+
+
 if __name__ == "__main__":
     print("🌱 Seeding demo_data/ with realistic mock records...")
     seed_citizen_reports()
     seed_social_posts()
     seed_satellite_polygons()
     seed_sensor_data()
+    seed_responders()
     print("\n✅ Done. All demo_data/ files populated.")
     print("   Tip: POST these through /ingest/* to test the pipeline end-to-end.")
+

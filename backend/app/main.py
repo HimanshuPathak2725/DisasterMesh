@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.db import get_qdrant_client_sync, init_db
-from app.routers import dispatch, health, incidents, ingest
+from app.routers import dispatch, health, incidents, ingest, responders
 
 settings = get_settings()
 
@@ -98,3 +98,4 @@ app.include_router(health.router)
 app.include_router(ingest.router, prefix="/ingest", tags=["Ingestion"])
 app.include_router(incidents.router, prefix="/incidents", tags=["Incidents"])
 app.include_router(dispatch.router, prefix="/dispatch", tags=["Dispatch"])
+app.include_router(responders.router, prefix="/responders", tags=["Responders"])

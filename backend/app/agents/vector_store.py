@@ -357,6 +357,65 @@ class VectorStore:
 
         return await asyncio.get_event_loop().run_in_executor(None, _do_get)
 
+    async def get_by_cluster_id(self, cluster_id: str) -> dict[str, Any] | None:
+        """
+        Return the payload dict for the *verified* point with the given cluster_id.
+
+        Attempts direct retrieval by point_id (derived from cluster_id) first,
+        falling back to a scroll search by payload field.
+        """
+        import asyncio as _asyncio
+        import uuid
+
+        def _do_get():
+            # 1. Direct point lookup by ID derived from cluster_id
+            raw_id = cluster_id.removeprefix("cluster_")
+            try:
+                point_id = uuid.UUID(raw_id).int % (2**63)
+            except ValueError:
+                point_id = abs(hash(cluster_id)) % (2**63)
+
+            try:
+                records = self._raw_client.retrieve(
+                    collection_name=COLLECTION_NAME,
+                    ids=[point_id],
+                    with_payload=True,
+                    with_vectors=False,
+                )
+                if records and records[0].payload:
+                    return records[0].payload
+            except Exception:
+                pass
+
+            # 2. Fallback: scroll search by cluster_id payload field
+            from qdrant_client.models import FieldCondition, Filter, MatchValue
+
+            try:
+                results = self._raw_client.scroll(
+                    collection_name=COLLECTION_NAME,
+                    scroll_filter=Filter(
+                        must=[
+                            FieldCondition(
+                                key="cluster_id", match=MatchValue(value=cluster_id)
+                            ),
+                        ]
+                    ),
+                    limit=1,
+                    with_payload=True,
+                    with_vectors=False,
+                )
+                points = results[0]
+                if points and points[0].payload:
+                    return points[0].payload
+            except Exception:
+                pass
+
+            return None
+
+        return await _asyncio.get_event_loop().run_in_executor(None, _do_get)
+
+
+
     async def collection_size(self) -> int:
         """Return the total number of points in the collection."""
         info = self._raw_client.get_collection(COLLECTION_NAME)

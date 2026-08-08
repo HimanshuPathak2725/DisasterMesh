@@ -42,6 +42,24 @@ class Priority(StrEnum):
     P4 = "P4"  # Low
 
 
+class ResponderStatus(StrEnum):
+    """Live operational status of a responder team."""
+
+    AVAILABLE = "available"
+    ASSIGNED = "assigned"
+    EN_ROUTE = "en_route"
+    ON_SCENE = "on_scene"
+
+
+class DispatchStatus(StrEnum):
+    """Outcome status of an Orchestrator dispatch attempt."""
+
+    ASSIGNED = "ASSIGNED"
+    NO_RESPONDERS = "NO_RESPONDERS_AVAILABLE"
+    SOLVER_INFEASIBLE = "SOLVER_INFEASIBLE"
+    HEURISTIC = "HEURISTIC_FALLBACK"
+
+
 # ── Ingestion models (input to Situational Agent) ─────────────────────────────
 
 
@@ -184,25 +202,85 @@ class ResponderCapability(StrEnum):
 
 
 class Responder(BaseModel):
+    """Full responder representation — used by Resource Agent and API responses."""
+
     id: str = Field(default_factory=lambda: str(uuid4()))
     name: str
+    team_type: str = "rescue"
     capabilities: list[ResponderCapability] = []
+    team_size: int = 1
+    capacity: int = 1
     lat: float
     lon: float
+    # backward-compat alias kept alongside the richer status field
     available: bool = True
-    team_size: int = 1
+    status: ResponderStatus = ResponderStatus.AVAILABLE
+    assigned_incident_id: str | None = None
+    eta_minutes: int | None = None
+    last_location_update: datetime | None = None
+    available_from: datetime | None = None
+
+
+# ── Responder CRUD request schemas (Resource Agent API) ───────────────────────
+
+
+class ResponderCreate(BaseModel):
+    """Request body for ``POST /responders``."""
+
+    name: str
+    team_type: str = "rescue"
+    capabilities: list[ResponderCapability] = []
+    team_size: int = Field(default=1, ge=1)
+    capacity: int = Field(default=1, ge=1)
+    lat: float
+    lon: float
+
+
+class LocationUpdate(BaseModel):
+    """Request body for ``PUT /responders/{id}/location``."""
+
+    lat: float
+    lon: float
+
+
+class StatusUpdate(BaseModel):
+    """Request body for ``PUT /responders/{id}/status``."""
+
+    status: ResponderStatus
+    incident_id: str | None = None
+    eta_minutes: int | None = None
 
 
 # ── Dispatch / Assignment (Orchestrator Agent) ────────────────────────────────
 
 
 class Assignment(BaseModel):
+    """Single responder-to-incident assignment produced by the Orchestrator."""
+
     id: str = Field(default_factory=lambda: str(uuid4()))
     cluster_id: str
     responder_id: str
     eta_seconds: float
+    # How well the responder's capabilities match the incident needs (0.0–1.0)
+    capability_match_score: float = Field(default=1.0, ge=0.0, le=1.0)
+    # Which method produced this assignment
+    optimization_method: str = "OPTIMAL"  # "OPTIMAL" | "HEURISTIC_FALLBACK"
     route: dict[str, Any] = {}
     assigned_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+
+class DispatchResult(BaseModel):
+    """Aggregated result returned by the Orchestrator for one incident."""
+
+    cluster_id: str
+    status: DispatchStatus
+    assignments: list[Assignment] = []
+    # Minimum ETA across all assigned responders (seconds)
+    min_eta_seconds: float = 0.0
+    # Sum of capacities across all assigned responders
+    total_capacity: int = 0
+    solver_status: str = ""
+    reason: str = ""
 
 
 # ── API response helpers ───────────────────────────────────────────────────────

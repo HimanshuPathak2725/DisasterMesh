@@ -35,13 +35,13 @@
     "semantic_hash": ""
   },
   "backend/app/agents/orchestrator.py": {
-    "mtime": 1786115070.7994463,
-    "ast_hash": "c08434802437e09b8995e71b2d13b4ba",
+    "mtime": 1786169325.5573316,
+    "ast_hash": "666c6b2acdf9d6b1287d59a1cf5f99de",
     "semantic_hash": ""
   },
   "backend/app/agents/resource.py": {
-    "mtime": 1786115070.8002107,
-    "ast_hash": "3d2c450d8e403f14c56cd69dd284b8b5",
+    "mtime": 1786169305.2689512,
+    "ast_hash": "1947e9e78eba485c6e25abebc4253e7b",
     "semantic_hash": ""
   },
   "backend/app/agents/situational.py": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "backend/app/main.py": {
-    "mtime": 1786167019.8332546,
-    "ast_hash": "4ac7f4fbd05ae076990b45e912ccddc9",
+    "mtime": 1786169203.4291208,
+    "ast_hash": "defdc87b17238d3caccabd279e47d045",
     "semantic_hash": ""
   },
   "backend/app/routers/__init__.py": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "backend/app/routers/dispatch.py": {
-    "mtime": 1786115070.7994487,
-    "ast_hash": "777c26f1d780ce3016c8e246449f4404",
+    "mtime": 1786169670.8781407,
+    "ast_hash": "cbf4104278e3826a2f36b2fbd3f8a5b2",
     "semantic_hash": ""
   },
   "backend/app/routers/health.py": {
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "backend/app/schemas.py": {
-    "mtime": 1786167058.6742501,
-    "ast_hash": "9cfe58bc1fe92b7b188a1f32970a35c2",
+    "mtime": 1786168791.1627305,
+    "ast_hash": "433a71c51f736e00d27242b816a0928a",
     "semantic_hash": ""
   },
   "backend/app/tests/__init__.py": {
@@ -140,18 +140,18 @@
     "semantic_hash": ""
   },
   "backend/scripts/seed_data.py": {
-    "mtime": 1786132351.1094046,
-    "ast_hash": "c8ecb3125c63b5f2ea34891a801ef23c",
+    "mtime": 1786169212.1140268,
+    "ast_hash": "6aa923383d92a7f82d882de30f2b9780",
     "semantic_hash": ""
   },
   "demo_data/citizen_reports/mock_reports.json": {
-    "mtime": 1786132557.9727643,
-    "ast_hash": "e553a89187d90bc9ce47c87997c3ab43",
+    "mtime": 1786169217.8707283,
+    "ast_hash": "47695f9dcf7f8e4a0cee5de8e4fb8098",
     "semantic_hash": ""
   },
   "demo_data/social_posts/mock_tweets.json": {
-    "mtime": 1786132557.973342,
-    "ast_hash": "057a45feb46a5cf38bc39a4b66147981",
+    "mtime": 1786169217.8715158,
+    "ast_hash": "52e9891c8821cc529162895ba8ec769d",
     "semantic_hash": ""
   },
   "pyproject.toml": {
@@ -160,18 +160,18 @@
     "semantic_hash": ""
   },
   "backend/requirements.txt": {
-    "mtime": 1786166949.9165354,
-    "ast_hash": "66b523c8f2ea98f39ff2b4bea1d1f6a7",
+    "mtime": 1786168989.8616183,
+    "ast_hash": "acffc18ea6c2de7d26293347b7b7de43",
     "semantic_hash": ""
   },
   "backend/app/models.py": {
-    "mtime": 1786134327.987247,
-    "ast_hash": "10e1338982c7137f4784b29926e63772",
+    "mtime": 1786168765.9879446,
+    "ast_hash": "98b4811871a2ec22382cb016fb9b9c54",
     "semantic_hash": ""
   },
   "backend/app/tests/unit/conftest.py": {
-    "mtime": 1786134762.9826338,
-    "ast_hash": "45114198571e7a4211e6a7501391bf1f",
+    "mtime": 1786169634.929691,
+    "ast_hash": "b602791c80f45ff3017a3b2cea77c750",
     "semantic_hash": ""
   },
   "backend/app/tests/unit/test_situational.py": {
@@ -180,8 +180,8 @@
     "semantic_hash": ""
   },
   "demo_data/iot_sensors/sensor_readings.json": {
-    "mtime": 1786132557.9742377,
-    "ast_hash": "74960d65e3cfd24f44b84564e0087687",
+    "mtime": 1786169217.8728316,
+    "ast_hash": "7eb200d042702214f145798e980d552d",
     "semantic_hash": ""
   },
   "backend/app/agents/embeddings.py": {
@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "backend/app/agents/vector_store.py": {
-    "mtime": 1786163920.5769792,
-    "ast_hash": "adeb9405aa769d2d3793508dbbf06630",
+    "mtime": 1786172265.170121,
+    "ast_hash": "ffd499f84b7bcba714a6ffd149b177e3",
     "semantic_hash": ""
   },
   "backend/app/tests/integration/test_vector_store.py": {
@@ -247,6 +247,36 @@
   "backend/app/tests/unit/test_victim_unit.py": {
     "mtime": 1786166271.5022485,
     "ast_hash": "2bc4519aeb01ee4cf166a6680e8584e4",
+    "semantic_hash": ""
+  },
+  "backend/app/routers/responders.py": {
+    "mtime": 1786169098.4827254,
+    "ast_hash": "4a61a7d9cbb5f80b5e3375630b8066b2",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/integration/test_dispatch_integration.py": {
+    "mtime": 1786169336.5269134,
+    "ast_hash": "43477540bf502d9e18d2dd822c0be130",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/unit/test_orchestrator_unit.py": {
+    "mtime": 1786169227.5785596,
+    "ast_hash": "24600e15489da51f7d1332b811b4372e",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/unit/test_resource_unit.py": {
+    "mtime": 1786169312.4697926,
+    "ast_hash": "9f9da85e50241f4466d16a5b9d787aec",
+    "semantic_hash": ""
+  },
+  "demo_data/responder_registry.json": {
+    "mtime": 1786169217.8732104,
+    "ast_hash": "8f3adecd3a576430434cecaa6009ebc1",
+    "semantic_hash": ""
+  },
+  "backend/app/tests/conftest.py": {
+    "mtime": 1786169630.835107,
+    "ast_hash": "22776f130aa3b97f6be76f1e3852b338",
     "semantic_hash": ""
   }
 }

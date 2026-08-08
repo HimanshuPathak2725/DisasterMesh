@@ -5,6 +5,8 @@ Tables
 ------
 raw_ingestion_records  — every normalised ProtoIncident row, keyed by its ID.
 audit_log              — immutable append-only trail: who did what, when.
+responders             — live responder registry (Phase 5).
+dispatch_records       — assignment audit trail (Phase 5).
 """
 
 from __future__ import annotations
@@ -81,3 +83,95 @@ class AuditLog(Base):
 
     def __repr__(self) -> str:
         return f"<AuditLog id={self.id} action={self.action!r} entity={self.entity_id!r}>"
+
+
+# ── Phase 5: Responder Registry ───────────────────────────────────────────────
+
+
+class ResponderRecord(Base):
+    """
+    Live responder registry entry.
+
+    Each row represents one response team that can be dispatched to incidents.
+    Location and status fields are updated in real time as responders move and
+    their assignment state changes.
+    """
+
+    __tablename__ = "responders"
+
+    # Primary key — UUID string (matches Responder.id Pydantic field)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    # Team classification and capabilities
+    # team_type: broad label e.g. "medical", "rescue", "logistics", "water"
+    team_type: Mapped[str] = mapped_column(String(32), nullable=False, default="rescue")
+    # capabilities: JSON dict e.g. {"medical": true, "rescue": true, "water": false}
+    capabilities: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    team_size: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    # capacity: how many parallel incident-units this team can handle
+    capacity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+
+    # Live location
+    current_lat: Mapped[float] = mapped_column(Float, nullable=False)
+    current_lon: Mapped[float] = mapped_column(Float, nullable=False)
+    last_location_update: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+
+    # Availability & assignment state
+    # status: "available" | "assigned" | "en_route" | "on_scene"
+    current_status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="available", index=True
+    )
+    assigned_incident_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    eta_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # available_from: earliest time this team can accept a new assignment
+    available_from: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<ResponderRecord id={self.id!r} name={self.name!r} "
+            f"status={self.current_status!r}>"
+        )
+
+
+# ── Phase 5: Dispatch Records ─────────────────────────────────────────────────
+
+
+class DispatchRecord(Base):
+    """
+    Immutable record of each assignment made by the Orchestrator Agent.
+
+    Created when the OR-Tools solver (or heuristic fallback) assigns a
+    responder to an incident.  Used for analytics and audit.
+    """
+
+    __tablename__ = "dispatch_records"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    cluster_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+    responder_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    eta_seconds: Mapped[float] = mapped_column(Float, nullable=False)
+    capability_match_score: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    # optimization_method: "OPTIMAL" | "HEURISTIC_FALLBACK"
+    optimization_method: Mapped[str] = mapped_column(String(32), nullable=False, default="OPTIMAL")
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="ASSIGNED")
+    assigned_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+        index=True,
+    )
+
+    def __repr__(self) -> str:
+        return (
+            f"<DispatchRecord id={self.id!r} cluster={self.cluster_id!r} "
+            f"responder={self.responder_id!r}>"
+        )

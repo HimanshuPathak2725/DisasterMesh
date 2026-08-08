@@ -19,6 +19,7 @@ langchain-core
 langchain-huggingface
 langchain-qdrant
 langchain-groq
+langgraph                     # stateful dispatch workflow (Phase 5 Orchestrator)
 sentence-transformers         # backend model used by langchain-huggingface
 
 # ── Optimization ──────────────────────────────────────────────────────────────
