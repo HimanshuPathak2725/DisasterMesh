@@ -43,7 +43,6 @@
   "41": "embeddings.py",
   "42": "get_qdrant_client_sync",
   "43": ".assess",
-  "44": "assess_incident",
   "45": "conftest.py",
   "46": "get_embedding_service",
   "47": "SourceType",
