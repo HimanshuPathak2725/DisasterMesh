@@ -69,10 +69,16 @@ async def _index_in_vector_store(proto: ProtoIncident) -> None:
     try:
         embedder = get_embedding_service()
         store = get_vector_store()
+
         vector = await embedder.embed_incident(proto)
         await store.upsert(proto, vector)
+
     except Exception as exc:
-        logger.warning("Failed to index proto incident %s in Qdrant: %s", proto.id, exc)
+        logger.warning(
+            "Failed to index proto incident %s in Qdrant: %s",
+            proto.id,
+            exc,
+        )
 
 
 @router.post("/report", response_model=IngestResponse, summary="Citizen report")

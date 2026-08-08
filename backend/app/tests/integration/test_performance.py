@@ -64,7 +64,7 @@ async def async_client():
 INGESTION_LIMIT_MS: float = 5_000.0    # 100 reports in 5 seconds
 QDRANT_SEARCH_LIMIT_MS: float = 200.0   # median search across 1k points
 SOLVER_LIMIT_MS: float = 500.0          # SCIP for 50 responders × 20 incidents
-WS_BROADCAST_LIMIT_MS: float = 500.0   # all 10 clients receive in 500 ms
+WS_BROADCAST_LIMIT_MS: float = 100.0   # all 10 clients receive in 100 ms
 
 QDRANT_DATASET_SIZE: int = 1_000       # points to pre-load
 QDRANT_SEARCH_REPEATS: int = 10        # number of searches to median
