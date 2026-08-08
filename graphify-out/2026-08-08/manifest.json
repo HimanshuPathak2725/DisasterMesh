@@ -190,8 +190,8 @@
     "semantic_hash": ""
   },
   "backend/app/agents/vector_store.py": {
-    "mtime": 1786169159.0787783,
-    "ast_hash": "867b20772c4d662ed80de7937e56c593",
+    "mtime": 1786172265.170121,
+    "ast_hash": "ffd499f84b7bcba714a6ffd149b177e3",
     "semantic_hash": ""
   },
   "backend/app/tests/integration/test_vector_store.py": {

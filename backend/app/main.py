@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.db import get_qdrant_client_sync, init_db
-from app.routers import dispatch, health, incidents, ingest, responders
+from app.routers import communication, dispatch, health, incidents, ingest, responders
 
 settings = get_settings()
 
@@ -99,3 +99,6 @@ app.include_router(ingest.router, prefix="/ingest", tags=["Ingestion"])
 app.include_router(incidents.router, prefix="/incidents", tags=["Incidents"])
 app.include_router(dispatch.router, prefix="/dispatch", tags=["Dispatch"])
 app.include_router(responders.router, prefix="/responders", tags=["Responders"])
+# Phase 6: Communication Agent — no prefix so WS /ws/updates is at root level
+app.include_router(communication.router, tags=["Communication"])
+

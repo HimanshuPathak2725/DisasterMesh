@@ -7,6 +7,7 @@ raw_ingestion_records  — every normalised ProtoIncident row, keyed by its ID.
 audit_log              — immutable append-only trail: who did what, when.
 responders             — live responder registry (Phase 5).
 dispatch_records       — assignment audit trail (Phase 5).
+communication_logs     — every outbound message sent by CommunicationAgent (Phase 6).
 """
 
 from __future__ import annotations
@@ -175,3 +176,60 @@ class DispatchRecord(Base):
             f"<DispatchRecord id={self.id!r} cluster={self.cluster_id!r} "
             f"responder={self.responder_id!r}>"
         )
+
+
+# ── Phase 6: Communication Audit Log ─────────────────────────────────────────
+
+
+class CommunicationLog(Base):
+    """
+    Audit log of every outbound message dispatched by the CommunicationAgent.
+
+    A row is written for each SMS / WhatsApp / mock notification sent to
+    responders or citizens, and for each situational summary generated.
+    ``delivery_status`` is one of ``"sent"`` | ``"failed"`` | ``"mock"``.
+    """
+
+    __tablename__ = "communication_logs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+
+    # Which incident this communication relates to
+    incident_id: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
+
+    # Who received this message
+    # recipient_type: "responder" | "citizen" | "authority"
+    recipient_type: Mapped[str] = mapped_column(String(16), nullable=False)
+    recipient_id: Mapped[str] = mapped_column(String(128), nullable=False)
+
+    # What kind of message
+    # message_type: "assignment" | "status_update" | "summary" | "test"
+    message_type: Mapped[str] = mapped_column(String(32), nullable=False)
+
+    # How it was sent
+    # channel: "sms" | "whatsapp" | "mock"
+    channel: Mapped[str] = mapped_column(String(16), nullable=False, default="mock")
+
+    # The full message body
+    message_body: Mapped[str] = mapped_column(Text, nullable=False)
+
+    # When it was sent
+    sent_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False,
+        index=True,
+    )
+
+    # Delivery outcome
+    delivery_status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="mock"
+    )
+    delivery_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    def __repr__(self) -> str:
+        return (
+            f"<CommunicationLog id={self.id!r} incident={self.incident_id!r} "
+            f"type={self.message_type!r} status={self.delivery_status!r}>"
+        )
+

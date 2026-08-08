@@ -331,3 +331,69 @@ class ClusterMatchResult:
     members: list[dict] = field(default_factory=list)
     member_vectors: list[list[float]] = field(default_factory=list)
     similarity_scores: list[float] = field(default_factory=list)
+
+
+# ── Phase 6: Communication Agent schemas ──────────────────────────────────────
+
+
+class StatusTransitionRequest(BaseModel):
+    """
+    Request body for ``POST /incidents/{cluster_id}/status``.
+
+    ``citizen_phone`` is optional — if provided the CommunicationAgent will
+    send a status-update SMS to the reporter.
+    """
+
+    new_status: IncidentStatus
+    reason: str | None = None
+    citizen_phone: str | None = None  # E.164 format e.g. "+919876543210"
+
+
+class AssignedResponderSummary(BaseModel):
+    """Per-responder row inside a SituationalSummary."""
+
+    responder_id: str
+    responder_name: str
+    eta_seconds: float
+    capability_match_score: float
+
+
+class SituationalSummary(BaseModel):
+    """
+    Structured, human-readable summary for incident commanders.
+
+    Returned by ``GET /incidents/{cluster_id}/summary``.
+    ``human_summary`` is a pre-formatted text block suitable for display
+    in a dashboard or sending as a digest message.
+    """
+
+    cluster_id: str
+    status: IncidentStatus
+    severity: Priority
+    confidence: float
+    lat: float
+    lon: float
+    timestamp: datetime
+    needs: NeedsProfile
+    source_provenance: list[SourceType]
+    assigned_responders: list[AssignedResponderSummary] = []
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    human_summary: str
+
+
+class CommLogEntry(BaseModel):
+    """API response shape for entries returned by ``GET /communications/logs``."""
+
+    id: str
+    incident_id: str
+    recipient_type: str
+    recipient_id: str
+    message_type: str
+    channel: str
+    message_body: str
+    sent_at: datetime
+    delivery_status: str
+    delivery_error: str | None = None
+
+    model_config = {"from_attributes": True}
+

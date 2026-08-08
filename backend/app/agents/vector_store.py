@@ -549,6 +549,98 @@ class VectorStore:
             point_id,
         )
 
+    async def get_incident(self, cluster_id: str) -> dict[str, Any] | None:
+        """
+        Return the payload dict for a verified incident cluster.
+
+        Thin alias for :meth:`get_by_cluster_id` — provides a clean, stable
+        name for callers that only need incident lookup (e.g. the Communication
+        router).
+
+        Parameters
+        ----------
+        cluster_id:
+            The cluster identifier, e.g. ``"cluster_abc123"``.
+
+        Returns
+        -------
+        dict | None
+            Qdrant payload dict, or ``None`` if not found.
+        """
+        return await self.get_by_cluster_id(cluster_id)
+
+    async def upsert_incident_status(
+        self,
+        cluster_id: str,
+        new_status: str | Any,
+    ) -> None:
+        """
+        Patch only the ``status`` field of an existing verified incident point.
+
+        Uses Qdrant's ``set_payload`` operation so no re-embedding is needed.
+        The point is located by its integer point ID derived from *cluster_id*
+        (same derivation used in :meth:`upsert_verified`).
+
+        Parameters
+        ----------
+        cluster_id:
+            The cluster to update, e.g. ``"cluster_abc123"``.
+        new_status:
+            The new :class:`~app.schemas.IncidentStatus` value (or string).
+        """
+        import asyncio
+        import uuid
+
+        from qdrant_client.models import Filter, FieldCondition, MatchValue
+
+        status_str = new_status.value if hasattr(new_status, "value") else str(new_status)
+
+        # Derive stable integer point ID from cluster_id (mirrors upsert_verified)
+        raw_id = cluster_id.removeprefix("cluster_")
+        try:
+            point_id = uuid.UUID(raw_id).int % (2**63)
+        except ValueError:
+            point_id = abs(hash(cluster_id)) % (2**63)
+
+        def _do_patch() -> None:
+            # Try direct point ID patch first
+            try:
+                self._raw_client.set_payload(
+                    collection_name=COLLECTION_NAME,
+                    payload={"status": status_str},
+                    points=[point_id],
+                )
+                return
+            except Exception:
+                pass
+
+            # Fallback: patch by cluster_id payload filter
+            try:
+                self._raw_client.set_payload(
+                    collection_name=COLLECTION_NAME,
+                    payload={"status": status_str},
+                    points=Filter(
+                        must=[
+                            FieldCondition(
+                                key="cluster_id",
+                                match=MatchValue(value=cluster_id),
+                            )
+                        ]
+                    ),
+                )
+            except Exception as exc:
+                logger.warning(
+                    "upsert_incident_status fallback failed for %s: %s",
+                    cluster_id,
+                    exc,
+                )
+
+        await asyncio.get_event_loop().run_in_executor(None, _do_patch)
+        logger.info(
+            "Status patched in Qdrant: cluster_id=%s → %s", cluster_id, status_str
+        )
+
+
 
 # ── Module-level singleton ────────────────────────────────────────────────────
 
