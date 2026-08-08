@@ -31,8 +31,11 @@
   "29": "test_verification_integration.py",
   "30": ".verify",
   "31": ".upsert",
+  "32": "get_resource_agent",
   "33": "vector_store.py",
   "34": "TestNotificationMockMode",
+  "35": "_record_to_schema",
+  "36": "get_settings",
   "37": "init_vector_store",
   "38": "TestStateMachine",
   "39": ".search_nearby",
@@ -43,5 +46,10 @@
   "44": "assess_incident",
   "45": "conftest.py",
   "46": "get_embedding_service",
-  "47": "SourceType"
+  "47": "SourceType",
+  "48": "conftest.py",
+  "49": "test_ingest.py",
+  "50": "main.py",
+  "51": "test_health.py",
+  "52": "get_qdrant_client"
 }
