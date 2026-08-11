@@ -137,6 +137,7 @@ class IntakeQueue:
                         "time_reference": parsed.time_reference,
                         "extracted_needs": parsed.needs.model_dump(),
                     },
+                    timestamp=raw_payload.get("timestamp"),
                 )
                 await situational_agent.ingest(proto)
                 processed_count += 1
@@ -161,6 +162,7 @@ class IntakeQueue:
                         lon=raw_payload.get("lon"),
                         address=raw_payload.get("address"),
                         media_urls=raw_payload.get("media_urls", []),
+                        timestamp=raw_payload.get("timestamp"),
                     )
                     await situational_agent.ingest(proto)
 

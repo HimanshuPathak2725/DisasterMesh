@@ -337,6 +337,7 @@ class SituationalAgent:
         address: str | None = None,
         media_urls: list[str] | None = None,
         metadata: dict[str, Any] | None = None,
+        timestamp: datetime | None = None,
     ) -> ProtoIncident:
         """Helper to build a ProtoIncident from raw attributes and normalize it."""
         st = SourceType(source) if isinstance(source, str) else source
@@ -347,6 +348,7 @@ class SituationalAgent:
             lon=lon,
             address=address,
             media_urls=media_urls or [],
+            timestamp=timestamp,
         )
         proto = await self.process_citizen_report(report_input)
         if metadata:

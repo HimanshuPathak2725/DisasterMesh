@@ -29,6 +29,7 @@ Concurrency:
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import logging
 import math
 import uuid
@@ -44,9 +45,13 @@ from qdrant_client.models import (
     Distance,
     FieldCondition,
     Filter,
+    GeoPoint,
+    GeoRadius,
     MatchAny,
     MatchValue,
+    PayloadSchemaType,
     PointStruct,
+    Range,
     VectorParams,
 )
 
@@ -101,7 +106,8 @@ def _cluster_id_to_point_id(cluster_id: str) -> int:
     try:
         return uuid.UUID(raw_id).int % (2**63)
     except ValueError:
-        return abs(hash(cluster_id)) % (2**63)
+        digest = hashlib.blake2b(cluster_id.encode("utf-8"), digest_size=8).digest()
+        return int.from_bytes(digest, byteorder="big") % (2**63)
 
 
 def _extract_vector(raw_vector: Any) -> list[float] | None:
@@ -117,7 +123,19 @@ def _extract_vector(raw_vector: Any) -> list[float] | None:
     """
     if raw_vector is None:
         return None
-    raw_v = raw_vector if isinstance(raw_vector, list) else list(raw_vector.values())[0]
+
+    # Handle list case
+    if isinstance(raw_vector, list):
+        raw_v = raw_vector
+    # Handle dict case (named vectors)
+    elif isinstance(raw_vector, dict):
+        if not raw_vector:
+            return None
+        raw_v = next(iter(raw_vector.values()))
+    else:
+        # Reject other types
+        return None
+
     if not isinstance(raw_v, list) or not all(isinstance(x, (int, float)) for x in raw_v):
         return None
     return [float(x) for x in raw_v]
@@ -198,6 +216,16 @@ class VectorStore:
                     distance=Distance.COSINE,
                 ),
             )
+            # Create geo index for location field
+            try:
+                self._raw_client.create_payload_index(
+                    collection_name=COLLECTION_NAME,
+                    field_name="location",
+                    field_schema=PayloadSchemaType.GEO,
+                )
+                logger.info("Created geo index on 'location' field")
+            except Exception as e:
+                logger.warning("Failed to create geo index (may already exist): %s", e)
             logger.info(
                 "Created Qdrant collection %r — dim=%d cosine",
                 COLLECTION_NAME,
@@ -239,6 +267,10 @@ class VectorStore:
         # Store page_content in metadata too for search compatibility
         payload = dict(doc.metadata)
         payload["page_content"] = doc.page_content
+
+        # Add geo point for server-side geo filtering
+        if proto.lat is not None and proto.lon is not None:
+            payload["location"] = {"lat": proto.lat, "lon": proto.lon}
 
         point = PointStruct(id=point_id, vector=vector, payload=payload)
 
@@ -286,101 +318,102 @@ class VectorStore:
         Find ProtoIncident payloads (and optional vectors) within geo radius + optional time window.
 
         Strategy:
-          1. Pull broad candidates via semantic search (if query_text given)
-             or scroll the full collection.
-          2. Haversine post-filter to radius_m.
-          3. Optionally filter by time_window_s (recency).
+          Uses server-side Qdrant filtering with paginated scrolling to apply
+          GeoRadius and timestamp filters directly in the database, avoiding
+          client-side post-filtering limitations.
 
         Returns payload dicts (or (payload, vector) tuples if with_vectors=True)
         sorted by distance ascending.
         Used by Phase 3 VerificationAgent for dedup clustering.
-
-        NOTE: candidate retrieval is capped at limit*10 — on a large, dense
-        collection this is a *sample*, not an exhaustive geo search. If you need
-        correctness guarantees at scale, this needs a real Qdrant geo-index
-        filter (server-side), not a client-side Haversine post-filter over a
-        bounded candidate set.
         """
-        candidates: list[dict[str, Any]] = []
-        candidates_with_vec: list[tuple[dict[str, Any], list[float]]] = []
 
-        # Step 1: Broad candidate retrieval
-        if query_text:
-            if with_vectors:
-                raw: list[Document] = await _run_blocking(
-                    lambda: self._store.similarity_search(query_text, k=limit * 10)
+        def _do_scroll() -> list[tuple[dict[str, Any], list[float]]] | list[dict[str, Any]]:
+            # Build filter conditions
+            conditions = []
+
+            # Geo filter
+            conditions.append(
+                FieldCondition(
+                    key="location",
+                    geo_radius=GeoRadius(
+                        center=GeoPoint(lat=lat, lon=lon),
+                        radius=radius_m,
+                    ),
                 )
-                proto_ids: list[str] = [
-                    str(pid) for doc in raw if (pid := doc.metadata.get("proto_id")) is not None
-                ]
-                candidates_with_vec = await self.get_vectors_by_filter(proto_ids, limit=limit * 10)
-            else:
-                raw = await _run_blocking(
-                    lambda: self._store.similarity_search(query_text, k=limit * 10)
+            )
+
+            # Time window filter
+            if time_window_s is not None:
+                now_epoch = datetime.now(UTC).timestamp()
+                min_timestamp = now_epoch - time_window_s
+                conditions.append(
+                    FieldCondition(
+                        key="timestamp_epoch",
+                        range=Range(gte=min_timestamp),
+                    )
                 )
-                candidates = [doc.metadata for doc in raw]
-        else:
-            # Scroll via raw Qdrant client
-            scroll_result = await _run_blocking(
-                lambda: self._raw_client.scroll(
+
+            scroll_filter = Filter(must=conditions) if conditions else None
+
+            # Paginated scroll to retrieve all matching points
+            results: list[tuple[dict[str, Any], list[float]]] = []
+            results_no_vec: list[dict[str, Any]] = []
+            next_offset = None
+
+            while True:
+                points, next_offset = self._raw_client.scroll(
                     collection_name=COLLECTION_NAME,
-                    limit=limit * 10,
+                    scroll_filter=scroll_filter,
+                    limit=100,  # Page size
+                    offset=next_offset,
                     with_payload=True,
                     with_vectors=with_vectors,
                 )
-            )
-            if with_vectors:
-                for p in scroll_result[0]:
+
+                if not points:
+                    break
+
+                for p in points:
                     if p.payload is None:
                         continue
-                    vec = _extract_vector(p.vector)
-                    if vec is None:
-                        continue
-                    candidates_with_vec.append((p.payload, vec))
-            else:
-                candidates = [p.payload for p in scroll_result[0] if p.payload]
 
+                    if with_vectors:
+                        vec = _extract_vector(p.vector)
+                        if vec is None:
+                            continue
+                        results.append((p.payload, vec))
+                    else:
+                        results_no_vec.append(p.payload)
+
+                if next_offset is None:
+                    break
+
+            return results if with_vectors else results_no_vec
+
+        # Execute paginated scroll
         if with_vectors:
+            candidates_with_vec = await _run_blocking(_do_scroll)
+            # Calculate distances and sort
             nearby_vec: list[tuple[float, dict[str, Any], list[float]]] = []
             for payload, vec in candidates_with_vec:
                 p_lat = payload.get("lat")
                 p_lon = payload.get("lon")
-                if p_lat is None or p_lon is None:
-                    continue
-                dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
-                if dist <= radius_m:
+                if p_lat is not None and p_lon is not None:
+                    dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
                     nearby_vec.append((dist, payload, vec))
-
-            if time_window_s is not None:
-                now_epoch = datetime.now(UTC).timestamp()
-                nearby_vec = [
-                    (d, p, v)
-                    for d, p, v in nearby_vec
-                    if p.get("timestamp_epoch") is not None
-                    and (now_epoch - p["timestamp_epoch"]) <= time_window_s
-                ]
 
             nearby_vec.sort(key=lambda x: x[0])
             return [(p, v) for _, p, v in nearby_vec[:limit]]
         else:
+            candidates = await _run_blocking(_do_scroll)
+            # Calculate distances and sort
             nearby: list[tuple[float, dict[str, Any]]] = []
             for payload in candidates:
                 p_lat = payload.get("lat")
                 p_lon = payload.get("lon")
-                if p_lat is None or p_lon is None:
-                    continue
-                dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
-                if dist <= radius_m:
+                if p_lat is not None and p_lon is not None:
+                    dist = _haversine_m(lat, lon, float(p_lat), float(p_lon))
                     nearby.append((dist, payload))
-
-            if time_window_s is not None:
-                now_epoch = datetime.now(UTC).timestamp()
-                nearby = [
-                    (d, p)
-                    for d, p in nearby
-                    if p.get("timestamp_epoch") is not None
-                    and (now_epoch - p["timestamp_epoch"]) <= time_window_s
-                ]
 
             nearby.sort(key=lambda x: x[0])
             return [p for _, p in nearby[:limit]]
@@ -600,6 +633,10 @@ class VectorStore:
             "severity": str(verified.severity),
             "status": str(verified.status),
         }
+
+        # Add geo point for server-side geo filtering
+        if verified.lat is not None and verified.lon is not None:
+            payload["location"] = {"lat": verified.lat, "lon": verified.lon}
 
         point = PointStruct(id=point_id, vector=vector, payload=payload)
 
